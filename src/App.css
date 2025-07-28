@@ -1,0 +1,18 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  transition: background 0.3s, color 0.3s;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Hide scrollbars for a cleaner look */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Add any custom global styles here */

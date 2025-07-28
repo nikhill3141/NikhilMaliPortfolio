@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+@import "tailwindcss";
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+ h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.retro body {
+  background: #fffbe6 !important;
+  color: #4b2e05 !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif !important;
+}
+.retro .bg-blue-500, .retro .bg-blue-600, .retro .bg-blue-100, .retro .bg-blue-900 {
+  background-color: #ffe066 !important;
+}
+.retro .text-blue-500, .retro .text-blue-600, .retro .text-blue-300 {
+  color: #d97706 !important;
+}
+.retro .shadow-lg, .retro .shadow {
+  box-shadow: 0 4px 24px 0 #ffe06644 !important;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+} 
+
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0 }
+}
+
+.animate-typing {
+  animation: typing 2s steps(30, end) 1 forwards;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+
+/* spinner */
+.loader {
+  border: 2px solid #3b82f6;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
