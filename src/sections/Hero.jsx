@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaInstagram} from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
   return (
@@ -59,12 +60,12 @@ export default function Hero() {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto justify-center sm:justify-start">
-            <a
-              href="/projects"
+            <Link
+              to="/projects"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg font-medium transition text-center"
             >
               View Projects
-            </a>
+            </Link>
             <a
               href="/NikhilMaliResume.pdf"
               download
