@@ -18,7 +18,7 @@ export default function Hero() {
           <div className="relative w-[240px] sm:w-[280px] md:w-[320px] lg:w-[360px] bg-gradient-to-br from-blue-700 to-purple-700 rounded-3xl shadow-2xl p-4 overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full bg-black/20 backdrop-blur-sm z-0 rounded-3xl" />
             <img
-              src="src/assets/cartoon-made-with-love-by-neural-frames-removebg-preview (2).png"
+              src="/Nikcartoonimg.png"
               alt="Profile"
               className="relative z-10 w-full h-[70%] object-contain rounded-3xl shadow-md"
             />
@@ -66,7 +66,7 @@ export default function Hero() {
               View Projects
             </a>
             <a
-              href="src\assets\NikhilMaliResumeORG.pdf"
+              href="/NikhilMaliResumeORG.pdf"
               download
               className="px-6 py-3 border border-blue-500 hover:bg-blue-500 hover:text-white rounded-full font-medium transition text-center"
             >
