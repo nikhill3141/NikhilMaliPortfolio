@@ -66,7 +66,7 @@ export default function Hero() {
               View Projects
             </a>
             <a
-              href="/NikhilMaliResumeORG.pdf"
+              href="/NikhilMaliResume.pdf"
               download
               className="px-6 py-3 border border-blue-500 hover:bg-blue-500 hover:text-white rounded-full font-medium transition text-center"
             >
