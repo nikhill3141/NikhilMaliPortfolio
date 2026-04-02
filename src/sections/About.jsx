@@ -1,86 +1,113 @@
-import { motion } from 'framer-motion';
+// import { Bot, Code2, LayoutPanelTop, Sparkles } from 'lucide-react';
+// // eslint-disable-next-line no-unused-vars
+// import { motion } from 'framer-motion';
 
-export default function About() {
-  return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-white dark:bg-black text-gray-800 dark:text-white">
-      <motion.h2
-        className="text-4xl font-extrabold mb-12 text-center"
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        About Me
-      </motion.h2>
+// export default function About() {
+//   return (
+//     <section id="about" className="px-4 py-20 text-gray-800 dark:text-white">
+//       <div className="mx-auto max-w-7xl">
+//         <motion.h2
+//           className="text-center text-4xl font-extrabold"
+//           initial={{ opacity: 0, y: -20 }}
+//           whileInView={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 0.6 }}
+//           viewport={{ once: true }}
+//         >
+//           About <span className="text-blue-500">Me</span>
+//         </motion.h2>
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-12 w-full max-w-6xl">
-        {/* Image Card */}
-        <motion.div
-          className="w-64 h-64 rounded-2xl overflow-hidden shadow-xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center"
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: false, amount: 0.3 }}
-        >
-          <img
-            src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif"
-            alt="Personality"
-            className="object-cover w-full h-full"
-          />
-        </motion.div>
+//         <p className="mx-auto mt-4 max-w-2xl text-center text-base text-gray-600 dark:text-gray-300">
+//           I combine backend engineering with thoughtful UI/UX. My goal is simple: ship interfaces that feel
+//           effortless and systems that stay reliable as your product grows.
+//         </p>
 
-        {/* Info Card */}
-        <motion.div
-          className="bg-gray-100 dark:bg-gray-900 p-8 rounded-2xl shadow-md max-w-xl w-full"
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-bold mb-4">Hi, I'm Nikhil Mali 👋</h3>
-          <p className="text-base leading-relaxed mb-4">
-            A passionate <strong>Full Stack Developer</strong> with a strong foundation in <strong>Django, Django REST Framework</strong>,
-            and frontend technologies like <strong>React</strong> and <strong>Tailwind CSS</strong>. I also love building modern UIs with
-            libraries like <strong>Framer Motion</strong> and experimenting with <strong>AI agents & automation workflows</strong>.
-          </p>
-          <p className="text-base leading-relaxed mb-4">
-            I’ve worked on a wide range of <strong>real-world projects</strong> like photo studio management systems, salon booking
-            apps, and intelligent automation tools — delivering solutions that blend design, scalability, and performance.
-          </p>
-          <p className="text-base text-gray-600 dark:text-gray-400">
-            Outside of coding, I explore new tech trends, sketch ideas, and create content around development and productivity.
-          </p>
-        </motion.div>
-      </div>
+//         <div className="mt-12 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-sm sm:p-10">
+//           <div className="flex w-full flex-col items-center gap-12 lg:flex-row">
+//             <motion.div
+//               className="flex h-64 w-64 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 to-purple-700 shadow-2xl"
+//               initial={{ opacity: 0, x: -40 }}
+//               whileInView={{ opacity: 1, x: 0 }}
+//               transition={{ duration: 0.7 }}
+//               viewport={{ once: false, amount: 0.3 }}
+//             >
+//               <img src="/Nikcartoonimg.png" alt="Nikhil Mali" className="h-full w-full object-contain" />
+//             </motion.div>
 
-      {/* Tech Stack Card */}
-      <motion.div
-        className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-6xl"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        {[
-          'Django',
-          'Django REST',
-          'React.js',
-          'Tailwind CSS',
-          'Node.js',
-          'JavaScript',
-          'PostgreSQL',
-          'Git & GitHub',
-          'Framer Motion',
-          'AI Agents',
-        ].map((tech) => (
-          <div
-            key={tech}
-            className="bg-white dark:bg-gray-800 text-center py-3 px-4 rounded-lg shadow-sm font-medium text-sm text-gray-700 dark:text-gray-300"
-          >
-            {tech}
-          </div>
-        ))}
-      </motion.div>
-    </section>
-  );
-}
+//             <motion.div
+//               className="w-full max-w-xl text-center"
+//               initial={{ opacity: 0, x: 40 }}
+//               whileInView={{ opacity: 1, x: 0 }}
+//               transition={{ duration: 0.7, delay: 0.2 }}
+//               viewport={{ once: true }}
+//             >
+//               <h3 className="mb-4 text-2xl font-bold">Hi, I'm Nikhil Mali 👋</h3>
+
+//               <p className="mb-4 text-base leading-relaxed">
+//                 I’m a <strong>Full Stack Developer</strong> focused on building end-to-end products—from REST APIs and
+//                 dashboards to responsive interfaces that look great on every screen size.
+//               </p>
+
+//               <p className="mb-4 text-base leading-relaxed">
+//                 On the backend, I work with <strong>Python</strong> and modern API practices to design services that are
+//                 clean, secure, and easy to maintain. On the frontend, I bring those capabilities to life using{' '}
+//                 <strong>React</strong>, component-driven UI, and smooth animations with <strong>Framer Motion</strong>.
+//               </p>
+
+//               <p className="mb-6 text-base text-gray-200/90">
+//                 I enjoy experimenting with <strong>AI agents</strong> and practical automation workflows—because great
+//                 software should save time and reduce repetitive work, not just be “cool”.
+//               </p>
+
+//               <div className="grid gap-3 sm:grid-cols-2">
+//                 {[
+//                   { icon: <LayoutPanelTop size={18} />, title: 'UI/UX', desc: 'Readable layouts + micro-interactions' },
+//                   { icon: <Code2 size={18} />, title: 'Engineering', desc: 'APIs, dashboards, maintainable code' },
+//                   { icon: <Bot size={18} />, title: 'Automation', desc: 'Agent ideas turned into workflows' },
+//                   { icon: <Sparkles size={18} />, title: 'Polish', desc: 'Consistency, spacing, and performance' },
+//                 ].map((item) => (
+//                   <div
+//                     key={item.title}
+//                     className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left"
+//                   >
+//                     <div className="mt-0.5 text-blue-300">{item.icon}</div>
+//                     <div>
+//                       <div className="text-sm font-bold text-white">{item.title}</div>
+//                       <div className="text-sm text-gray-300">{item.desc}</div>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </motion.div>
+//           </div>
+
+//           <motion.div
+//             className="mt-10 grid gap-4 text-center sm:grid-cols-3 lg:grid-cols-5"
+//             initial={{ opacity: 0, y: 30 }}
+//             whileInView={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.6 }}
+//             viewport={{ once: true }}
+//           >
+//             {[
+//               'REST APIs',
+//               'React',
+//               'Tailwind CSS',
+//               'Node.js',
+//               'PostgreSQL',
+//               'Git & GitHub',
+//               'Framer Motion',
+//               'AI Agents',
+//               'Performance',
+//             ].map((tech) => (
+//               <div
+//                 key={tech}
+//                 className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-gray-200 shadow-sm"
+//               >
+//                 {tech}
+//               </div>
+//             ))}
+//           </motion.div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }

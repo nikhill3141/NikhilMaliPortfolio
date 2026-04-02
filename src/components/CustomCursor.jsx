@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 export default function CustomCursor() {

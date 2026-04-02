@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useAnimation, useInView } from 'framer-motion';
 import emailjs from 'emailjs-com';
 import toast, { Toaster } from 'react-hot-toast';
@@ -13,7 +14,7 @@ export default function Contact() {
 
   useEffect(() => {
     if (inView) controls.start({ opacity: 1, y: 0 });
-  }, [inView]);
+  }, [controls, inView]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,16 +52,18 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="min-h-screen py-24 px-6 bg-gradient-to-b from-blue-50 to-white dark:from-black dark:to-gray-950 flex items-center justify-center"
+      className="flex min-h-[70vh] items-center justify-center py-24"
     >
       <Toaster position="top-right" />
-      <div className="w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl p-10">
-        <h2 className="text-4xl font-bold text-center text-zinc-800 dark:text-white mb-10">
-          Get in <span className="text-blue-500">Touch</span>
+      <div className="w-full max-w-2xl rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl backdrop-blur-sm sm:p-10">
+        <h2 className="text-4xl font-bold text-center text-black dark:text-white mb-4">
+          Get in <span className="text-blue-600 dark:text-blue-400">Touch</span>
         </h2>
+        <p className="mx-auto mb-10 max-w-lg text-center text-black dark:text-gray-300">
+          Have an idea, a role, or a problem to solve? Send a message and I’ll get back to you as soon as I can.
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6" ref={ref}>
-          {/* Name Field */}
           <motion.div
             className="w-full"
             initial={{ opacity: 0, y: 30 }}
@@ -78,7 +81,6 @@ export default function Contact() {
             />
           </motion.div>
 
-          {/* Email Field */}
           <motion.div
             className="w-full"
             initial={{ opacity: 0, y: 30 }}
@@ -96,7 +98,6 @@ export default function Contact() {
             />
           </motion.div>
 
-          {/* Message Field */}
           <motion.div
             className="w-full"
             initial={{ opacity: 0, y: 30 }}
@@ -113,7 +114,6 @@ export default function Contact() {
             />
           </motion.div>
 
-          {/* Submit Button */}
           <motion.div
             className="w-full"
             whileTap={{ scale: 0.95 }}

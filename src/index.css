@@ -1,72 +1,152 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
 
 @import "tailwindcss";
 
-body {
-  font-family: 'Poppins', system-ui, sans-serif;
+:root {
+  color-scheme: light dark;
 }
 
- h1 {
+body {
+  margin: 0;
+  font-family: 'Manrope', system-ui, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Light mode (default) */
+html:not(.dark) {
+  color-scheme: light;
+  background: linear-gradient(180deg, #e1e5f7 0%, #d8d9eae8 100%);
+}
+
+html:not(.dark) body {
+  background: linear-gradient(180deg, #e1e5f7 0%, #d8d9eae8 100%);
+  color: #000000;
+}
+
+/* Force text to black in light mode (except nav, hero, and skills) */
+html:not(.dark) #blogs,
+html:not(.dark) #projects,
+html:not(.dark) #youtube,
+html:not(.dark) #contact h1,
+html:not(.dark) #contact h2,
+html:not(.dark) #contact h3,
+html:not(.dark) #contact h4,
+html:not(.dark) #contact h5,
+html:not(.dark) #contact h6,
+html:not(.dark) #contact p,
+html:not(.dark) #contact span,
+html:not(.dark) #contact strong,
+html:not(.dark) #contact li,
+html:not(.dark) #contact a,
+html:not(.dark) #contact button,
+html:not(.dark) #contact div,
+html:not(.dark) #blogs h1,
+html:not(.dark) #blogs h2,
+html:not(.dark) #blogs h3,
+html:not(.dark) #blogs h4,
+html:not(.dark) #blogs h5,
+html:not(.dark) #blogs h6,
+html:not(.dark) #blogs p,
+html:not(.dark) #blogs span,
+html:not(.dark) #blogs strong,
+html:not(.dark) #blogs li,
+html:not(.dark) #blogs a,
+html:not(.dark) #blogs button,
+html:not(.dark) #blogs div,
+html:not(.dark) #projects h1,
+html:not(.dark) #projects h2,
+html:not(.dark) #projects h3,
+html:not(.dark) #projects h4,
+html:not(.dark) #projects h5,
+html:not(.dark) #projects h6,
+html:not(.dark) #projects p,
+html:not(.dark) #projects span,
+html:not(.dark) #projects strong,
+html:not(.dark) #projects li,
+html:not(.dark) #projects a,
+html:not(.dark) #projects button,
+html:not(.dark) #projects div,
+html:not(.dark) #youtube h1,
+html:not(.dark) #youtube h2,
+html:not(.dark) #youtube h3,
+html:not(.dark) #youtube h4,
+html:not(.dark) #youtube h5,
+html:not(.dark) #youtube h6,
+html:not(.dark) #youtube p,
+html:not(.dark) #youtube span,
+html:not(.dark) #youtube strong,
+html:not(.dark) #youtube li,
+html:not(.dark) #youtube a,
+html:not(.dark) #youtube button,
+html:not(.dark) #youtube div {
+  color: #000000 !important;
+}
+
+/* Override specific utility classes in light mode (except nav, hero, skills) */
+html:not(.dark) #blogs .text-gray-300,
+html:not(.dark) #blogs .text-gray-400,
+html:not(.dark) #blogs .text-gray-500,
+html:not(.dark) #blogs .text-gray-600,
+html:not(.dark) #blogs .text-gray-700,
+html:not(.dark) #blogs .text-gray-800,
+html:not(.dark) #projects .text-gray-300,
+html:not(.dark) #projects .text-gray-400,
+html:not(.dark) #projects .text-gray-500,
+html:not(.dark) #projects .text-gray-600,
+html:not(.dark) #projects .text-gray-700,
+html:not(.dark) #projects .text-gray-800,
+html:not(.dark) #youtube .text-gray-300,
+html:not(.dark) #youtube .text-gray-400,
+html:not(.dark) #youtube .text-gray-500,
+html:not(.dark) #youtube .text-gray-600,
+html:not(.dark) #youtube .text-gray-700,
+html:not(.dark) #youtube .text-gray-800 {
+  color: #000000 !important;
+}
+
+html:not(.dark) #blogs .text-blue-700,
+html:not(.dark) #blogs .text-blue-600,
+html:not(.dark) #projects .text-blue-700,
+html:not(.dark) #projects .text-blue-600,
+html:not(.dark) #youtube .text-blue-700,
+html:not(.dark) #youtube .text-blue-600 {
+  color: #2563eb !important;
+}
+
+/* Dark mode */
+html.dark {
+  color-scheme: dark;
+  background: linear-gradient(180deg, #090a0e 0%, #090f19 100%);
+}
+
+html.dark body {
+  background: linear-gradient(180deg, #090a0e 0%, #090f19 100%);
+  color: #f1f5f9;
+} 
+/*  
+h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
+} */
 
-button {
+/* button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-}
+} */
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.retro body {
-  background: #fffbe6 !important;
-  color: #4b2e05 !important;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif !important;
-}
-.retro .bg-blue-500, .retro .bg-blue-600, .retro .bg-blue-100, .retro .bg-blue-900 {
-  background-color: #ffe066 !important;
-}
-.retro .text-blue-500, .retro .text-blue-600, .retro .text-blue-300 {
-  color: #d97706 !important;
-}
-.retro .shadow-lg, .retro .shadow {
-  box-shadow: 0 4px 24px 0 #ffe06644 !important;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} 
-
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1 }
-  50% { opacity: 0 }
+  outline: none;
 }
 
 .animate-typing {
@@ -79,8 +159,6 @@ button:focus-visible {
   animation: blink 1s step-end infinite;
 }
 
-
-/* spinner */
 .loader {
   border: 2px solid #3b82f6;
   border-top: 2px solid white;
@@ -90,8 +168,18 @@ button:focus-visible {
   animation: spin 0.6s linear infinite;
 }
 
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0 }
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
+} 
 

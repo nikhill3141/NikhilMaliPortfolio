@@ -1,92 +1,149 @@
+﻿import { Bot, Code2, LayoutPanelTop, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaInstagram} from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { playClickSound } from '../utils/playClickSound';
 
 export default function Hero() {
   return (
     <section
-      id="hero"
-      className="min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-20 bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#1e293b] text-white font-sans pt-20 md:pt-0"
+      id="home"
+      className="relative px-4 "
     >
-      <div className="flex flex-col md:flex-row items-center gap-12 max-w-7xl w-full">
-        {/* Right Column - Profile Card First on Mobile */}
+      <div className="absolute inset-0 -z-10 bg-neutral-20" />
+      <div className="absolute inset-0 -z-10 opacity-50 dark:opacity-30 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.06),_transparent_55%)]" />
+      
+      <div className="mx-auto max-w-7xl">
         <motion.div
-          className="z-10 flex justify-center flex-1 w-full order-1 md:order-2 mt-10 md:mt-0"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
         >
-          <div className="relative w-[240px] sm:w-[280px] md:w-[320px] lg:w-[360px] bg-gradient-to-br from-blue-700 to-purple-700 rounded-3xl shadow-2xl p-4 overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full bg-black/20 backdrop-blur-sm z-0 rounded-3xl" />
-            <img
-              src="/Nikcartoonimg.png"
-              alt="Profile"
-              className="relative z-10 w-full h-[70%] object-contain rounded-3xl shadow-md"
-            />
-            <div className="relative z-10 mt-4 text-center">
-              <h3 className="text-xl sm:text-2xl font-semibold text-white">Nikhil Mali</h3>
-              <p className="text-sm sm:text-base text-gray-300">Software Engineer | Full Stack | UI/UX</p>
-              <div className="mt-3 text-xs text-gray-400 px-2">
-                <p>📍 Nashik, India</p>
-                <p>🎓 Computer Engineering</p>
-              </div>
-            </div>
-          </div>
         </motion.div>
 
-        {/* Left Column - Text Section */}
-        <motion.div
-          className="flex flex-col items-center md:items-start text-center md:text-left z-10 flex-1 order-2 md:order-1"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight break-words">
-            Hi, I'm <span className="text-blue-500">Nikhil Mali</span>
+        <div className="mb-16 rounded-3xl border border-blue-300/30 p-6 shadow-xl backdrop-blur-sm bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:border-slate-700/60 dark:bg-slate-900/70 sm:p-10">
+          <div className="flex w-full flex-col gap-12 lg:flex-row">
+            <div className='flex flex-col items-center'>
+              <motion.div
+              className="flex h-64 w-64 flex-shrink-0  overflow-hidden rounded-[500px] bg-gradient-to-br from-yellow-300 to-yellow-300 shadow-2xl p-2"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+            >
+              <img src="linkedInprofile-removebg.png" alt="Nikhil Mali" className="h-full w-full object-contain rounded-2xl" />
+              
+            </motion.div>
+            
+              <div className="mt-6 flex  justify-center gap-4 text-xl text-blue-300 dark:text-slate-300 lg:justify-start">
+                <a href="https://github.com/nikhill3141" target="_blank" rel="noopener noreferrer" className="transition hover:text-blue-400 dark:hover:text-blue-400">
+                  <FaGithub />
+                </a>
+                <a href="https://www.linkedin.com/in/nikhil-mali-aa878a236/" target="_blank" rel="noopener noreferrer" className="transition hover:text-blue-400 dark:hover:text-blue-400">
+                  <FaLinkedin />
+                </a>
+                <a href="https://www.instagram.com/nikhilmali3141/" target="_blank" rel="noopener noreferrer" className="transition hover:text-pink-400 dark:hover:text-pink-400">
+                  <FaInstagram />
+                </a>
+              </div>
+
+            </div>
+
+
+            <motion.div
+              className="w-full text-center lg:text-left"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+            <h1 className="text-4xl font-semibold leading-tight text-white dark:text-slate-100 sm:text-5xl">
+               Hi, I'm <span className="text-blue-400 dark:text-blue-400">Nikhil Mali</span> 
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 font-medium mb-6 max-w-md">
-            Full Stack Developer, Designer, and Creative Technologist
-          </p>
+              <h2 className="mb-4 text-2xl font-semibold text-white dark:text-slate-400">Full Stack Developer</h2>
 
-          <div className="bg-white/5 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-white/10 shadow-lg mb-6 max-w-lg">
-            <p className="text-sm sm:text-base md:text-lg text-gray-400">
-              I specialize in building scalable web apps using{" "}
-              <span className="text-blue-400 font-semibold">Django, Python, and REST APIs</span>. Skilled in{" "}
-              <span className="text-green-400 font-semibold">React</span> and familiar with{" "}
-              <span className="text-yellow-400 font-semibold">Node.js</span>, I like creating smooth user experiences with clean, modern UI.
-              Exploring the AI Agents and Automation
-            </p>
+              <p className="mb-4 text-base leading-relaxed text-white dark:text-slate-300">
+                I'm focused on building end-to-end products from REST APIs 
+              </p>
+
+              <p className="mb-4 text-base leading-relaxed text-white dark:text-slate-300">
+                I work with <strong>MERN</strong> and modern API practices to design services that are clean, secure, and easy to maintain. On the frontend, I bring those capabilities to life using <strong>React</strong>, component-driven UI, and smooth animations with <strong>Framer Motion</strong>.
+              </p>
+
+              <p className="mb-6 text-base text-white dark:text-slate-400">
+                I enjoy experimenting with <strong>AI agents</strong> and practical automation workflows—because great software should save time and reduce repetitive work.
+              </p>
+
+              <div className="mb-6 grid gap-3 sm:grid-cols-2">
+                {[
+                  { icon: <LayoutPanelTop size={18} />, title: 'UI - UX', desc: 'Readable layouts + micro-interactions' },
+                  { icon: <Code2 size={18} />, title: 'MERN', desc: 'APIs, dashboards, maintainable code' },
+                  { icon: <Bot size={18} />, title: 'Automation', desc: 'Agent ideas turned into workflows' },
+                  { icon: <Sparkles size={18} />, title: 'Scaling', desc: 'Consistency, spacing, and performance' },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex items-start gap-3 rounded-2xl border border-blue-300/30 dark:border-slate-700/40 bg-blue-500/10 dark:bg-slate-800 p-4"
+                  >
+                    <div className="mt-0.5 text-blue-300 dark:text-blue-400">{item.icon}</div>
+                    <div>
+                      <div className="text-sm font-semibold text-white dark:text-white">{item.title}</div>
+                      <div className="text-sm text-blue-100 dark:text-slate-300">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
+                <a
+                  href="#projects"
+                  onClick={playClickSound}
+                  className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                >
+                  View Projects
+                </a>
+                <a
+                  href="/NikhilMaliResume.pdf"
+                  download
+                  className="rounded-full border border-blue-500 px-6 py-2.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-500/10"
+                >
+                  Download Resume
+                </a>
+                <a
+                  href="#contact"
+                  onClick={playClickSound}
+                  className="rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 dark:border-slate-600 dark:text-slate-200 dark:hover:border-slate-500"
+                >
+                  Get in Touch
+                </a>
+              </div>
+
+            </motion.div>
           </div>
+        </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto justify-center sm:justify-start">
-            <Link
-              to="/projects"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg font-medium transition text-center"
+        <motion.div
+          className="grid gap-4 text-center sm:grid-cols-3 lg:grid-cols-5"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {[
+            'REST APIs',
+            'React',
+            'Tailwind CSS',
+            'Node.js',
+            'PostgreSQL',
+            'Git & GitHub',
+            'Framer Motion',
+            'AI Agents',
+            'Performance',
+          ].map((tech) => (
+            <div
+              key={tech}
+              className="rounded-xl border border-blue-300/30 dark:border-slate-700/40 bg-blue-500/10 dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-white dark:text-slate-200 shadow-sm"
             >
-              View Projects
-            </Link>
-            <a
-              href="/NikhilMaliResume.pdf"
-              download
-              className="px-6 py-3 border border-blue-500 hover:bg-blue-500 hover:text-white rounded-full font-medium transition text-center"
-            >
-              Download Resume
-            </a>
-          </div>
-
-          {/* Social Icons */}
-          <div className="flex justify-center sm:justify-start space-x-6 text-2xl text-blue-400">
-            <a href="https://github.com/nikhill3141" target="_blank" rel="noopener noreferrer">
-              <FaGithub className="hover:text-white transition" />
-            </a>
-            <a href="https://www.linkedin.com/in/nikhil-mali-aa878a236/" target="_blank" rel="noopener noreferrer">
-              <FaLinkedin className="hover:text-white transition" />
-            </a>
-            <a href="https://www.instagram.com/nikhilmali3141/" target="_blank" rel="noopener noreferrer">
-              <FaInstagram className="hover:text-white transition" />
-            </a>
-          </div>
+              {tech}
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>

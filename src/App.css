@@ -1,18 +1,21 @@
 html {
   scroll-behavior: smooth;
-}
+} 
 
 body {
   transition: background 0.3s, color 0.3s;
 }
 
 section {
-  scroll-margin-top: 80px;
+  scroll-margin-top: 96px;
 }
 
-/* Hide scrollbars for a cleaner look */
 body::-webkit-scrollbar {
   display: none;
 }
 
-/* Add any custom global styles here */
+.content-card {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+}
