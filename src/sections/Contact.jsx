@@ -1,8 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, useAnimation, useInView } from 'framer-motion';
 import emailjs from 'emailjs-com';
 import toast, { Toaster } from 'react-hot-toast';
+import { Mail, Send } from 'lucide-react';
+
+function SectionHeading({ subHeading, heading }) {
+  return (
+    <div>
+      <p className="text-sm text-secondary">{subHeading}</p>
+      <h2 className="text-2xl font-bold">{heading}</h2>
+    </div>
+  );
+}
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -50,92 +60,91 @@ export default function Contact() {
   };
 
   return (
-    <section
-      id="contact"
-      className="flex min-h-[70vh] items-center justify-center py-24"
-    >
+    <section id="contact" className="sleek-section">
       <Toaster position="top-right" />
-      <div className="w-full max-w-2xl rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 shadow-2xl backdrop-blur-sm sm:p-10">
-        <h2 className="text-4xl font-bold text-center text-black dark:text-white mb-4">
-          Get in <span className="text-blue-600 dark:text-blue-400">Touch</span>
-        </h2>
-        <p className="mx-auto mb-10 max-w-lg text-center text-black dark:text-gray-300">
-          Have an idea, a role, or a problem to solve? Send a message and I’ll get back to you as soon as I can.
-        </p>
+      <SectionHeading subHeading="Contact" heading="Get in touch" />
 
-        <form onSubmit={handleSubmit} className="space-y-6" ref={ref}>
+      <div className="sleek-card mt-8 border-dashed p-6 sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-xl text-secondary">
+            Have an idea, a role, or a product problem to solve? Send a message and I will
+            reply as soon as I can.
+          </p>
+          <a href="mailto:nikhilmali3141@gmail.com" className="sleek-button shrink-0">
+            <Mail size={16} />
+            Email
+          </a>
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4" ref={ref}>
           <motion.div
-            className="w-full"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
             <input
               type="text"
               name="name"
-              placeholder="Your Full Name"
+              placeholder="Your full name"
               value={form.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-secondary focus:border-[var(--foreground)]"
               required
             />
           </motion.div>
 
           <motion.div
-            className="w-full"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.4, delay: 0.08 }}
           >
             <input
               type="email"
               name="email"
-              placeholder="Your Email Address"
+              placeholder="Your email address"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-secondary focus:border-[var(--foreground)]"
               required
             />
           </motion.div>
 
           <motion.div
-            className="w-full"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.16 }}
           >
             <textarea
               name="message"
               placeholder="Type your message..."
               value={form.message}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white shadow-inner min-h-[140px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="min-h-[140px] w-full resize-y rounded-md border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-secondary focus:border-[var(--foreground)]"
               required
             />
           </motion.div>
 
-          <motion.div
-            className="w-full"
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 30 }}
+          <motion.button
+            type="submit"
+            className="sleek-button w-full"
+            disabled={loading}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={controls}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.4, delay: 0.24 }}
           >
-            <button
-              type="submit"
-              className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold text-lg shadow-md hover:bg-blue-700 transition-all duration-200 flex items-center justify-center gap-2"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="loader border-white"></span>
-                  Sending...
-                </>
-              ) : (
-                'Send Message'
-              )}
-            </button>
-          </motion.div>
+            {loading ? (
+              <>
+                <span className="loader" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send size={16} />
+                Send Message
+              </>
+            )}
+          </motion.button>
         </form>
       </div>
     </section>

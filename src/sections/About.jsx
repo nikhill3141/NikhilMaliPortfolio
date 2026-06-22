@@ -1,113 +1,109 @@
-// import { Bot, Code2, LayoutPanelTop, Sparkles } from 'lucide-react';
-// // eslint-disable-next-line no-unused-vars
-// import { motion } from 'framer-motion';
+import { Bot, Code2, LayoutPanelTop, Sparkles } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
 
-// export default function About() {
-//   return (
-//     <section id="about" className="px-4 py-20 text-gray-800 dark:text-white">
-//       <div className="mx-auto max-w-7xl">
-//         <motion.h2
-//           className="text-center text-4xl font-extrabold"
-//           initial={{ opacity: 0, y: -20 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.6 }}
-//           viewport={{ once: true }}
-//         >
-//           About <span className="text-blue-500">Me</span>
-//         </motion.h2>
+const strengths = [
+  {
+    icon: LayoutPanelTop,
+    title: 'UI/UX',
+    description: 'Readable layouts, careful spacing, and simple interaction states.',
+  },
+  {
+    icon: Code2,
+    title: 'Engineering',
+    description: 'APIs, dashboards, auth flows, and maintainable full-stack code.',
+  },
+  {
+    icon: Bot,
+    title: 'Automation',
+    description: 'Practical AI and workflow ideas turned into useful tools.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Polish',
+    description: 'Consistency, performance, and product details that feel finished.',
+  },
+];
 
-//         <p className="mx-auto mt-4 max-w-2xl text-center text-base text-gray-600 dark:text-gray-300">
-//           I combine backend engineering with thoughtful UI/UX. My goal is simple: ship interfaces that feel
-//           effortless and systems that stay reliable as your product grows.
-//         </p>
+const tools = [
+  'REST APIs',
+  'React',
+  'Tailwind CSS',
+  'Node.js',
+  'MongoDB',
+  'PostgreSQL',
+  'Git & GitHub',
+  'Framer Motion',
+  'AI Agents',
+];
 
-//         <div className="mt-12 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-sm sm:p-10">
-//           <div className="flex w-full flex-col items-center gap-12 lg:flex-row">
-//             <motion.div
-//               className="flex h-64 w-64 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 to-purple-700 shadow-2xl"
-//               initial={{ opacity: 0, x: -40 }}
-//               whileInView={{ opacity: 1, x: 0 }}
-//               transition={{ duration: 0.7 }}
-//               viewport={{ once: false, amount: 0.3 }}
-//             >
-//               <img src="/Nikcartoonimg.png" alt="Nikhil Mali" className="h-full w-full object-contain" />
-//             </motion.div>
+function SectionHeading({ subHeading, heading }) {
+  return (
+    <div>
+      <p className="text-sm text-secondary">{subHeading}</p>
+      <h2 className="text-2xl font-bold">{heading}</h2>
+    </div>
+  );
+}
 
-//             <motion.div
-//               className="w-full max-w-xl text-center"
-//               initial={{ opacity: 0, x: 40 }}
-//               whileInView={{ opacity: 1, x: 0 }}
-//               transition={{ duration: 0.7, delay: 0.2 }}
-//               viewport={{ once: true }}
-//             >
-//               <h3 className="mb-4 text-2xl font-bold">Hi, I'm Nikhil Mali 👋</h3>
+export default function About() {
+  return (
+    <section id="about" className="sleek-section">
+      <SectionHeading subHeading="About" heading="Me" />
 
-//               <p className="mb-4 text-base leading-relaxed">
-//                 I’m a <strong>Full Stack Developer</strong> focused on building end-to-end products—from REST APIs and
-//                 dashboards to responsive interfaces that look great on every screen size.
-//               </p>
+      <div className="mt-8 flex flex-col gap-6 md:flex-row">
+        <motion.img
+          src="/Nikcartoonimg.png"
+          alt="Nikhil Mali cartoon avatar"
+          className="h-52 w-52 rounded-md border-2 border-[var(--border)] bg-blue-300 object-contain dark:bg-yellow-300"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45 }}
+        />
 
-//               <p className="mb-4 text-base leading-relaxed">
-//                 On the backend, I work with <strong>Python</strong> and modern API practices to design services that are
-//                 clean, secure, and easy to maintain. On the frontend, I bring those capabilities to life using{' '}
-//                 <strong>React</strong>, component-driven UI, and smooth animations with <strong>Framer Motion</strong>.
-//               </p>
+        <div className="flex-1">
+          <h3 className="text-2xl font-bold">Nikhil Mali</h3>
+          <p className="mt-4 text-secondary">
+            I like building products that are easy to understand from the first screen. My work
+            usually sits between backend systems, clear interfaces, and small details that make
+            software feel calm to use.
+          </p>
 
-//               <p className="mb-6 text-base text-gray-200/90">
-//                 I enjoy experimenting with <strong>AI agents</strong> and practical automation workflows—because great
-//                 software should save time and reduce repetitive work, not just be “cool”.
-//               </p>
+          <p className="mt-8 font-bold text-secondary">Skills</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {tools.map((tool) => (
+              <span key={tool} className="sleek-chip px-2 py-1 text-sm font-bold">
+                {tool}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
 
-//               <div className="grid gap-3 sm:grid-cols-2">
-//                 {[
-//                   { icon: <LayoutPanelTop size={18} />, title: 'UI/UX', desc: 'Readable layouts + micro-interactions' },
-//                   { icon: <Code2 size={18} />, title: 'Engineering', desc: 'APIs, dashboards, maintainable code' },
-//                   { icon: <Bot size={18} />, title: 'Automation', desc: 'Agent ideas turned into workflows' },
-//                   { icon: <Sparkles size={18} />, title: 'Polish', desc: 'Consistency, spacing, and performance' },
-//                 ].map((item) => (
-//                   <div
-//                     key={item.title}
-//                     className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left"
-//                   >
-//                     <div className="mt-0.5 text-blue-300">{item.icon}</div>
-//                     <div>
-//                       <div className="text-sm font-bold text-white">{item.title}</div>
-//                       <div className="text-sm text-gray-300">{item.desc}</div>
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </motion.div>
-//           </div>
-
-//           <motion.div
-//             className="mt-10 grid gap-4 text-center sm:grid-cols-3 lg:grid-cols-5"
-//             initial={{ opacity: 0, y: 30 }}
-//             whileInView={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.6 }}
-//             viewport={{ once: true }}
-//           >
-//             {[
-//               'REST APIs',
-//               'React',
-//               'Tailwind CSS',
-//               'Node.js',
-//               'PostgreSQL',
-//               'Git & GitHub',
-//               'Framer Motion',
-//               'AI Agents',
-//               'Performance',
-//             ].map((tech) => (
-//               <div
-//                 key={tech}
-//                 className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-gray-200 shadow-sm"
-//               >
-//                 {tech}
-//               </div>
-//             ))}
-//           </motion.div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        {strengths.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={item.title}
+              className="sleek-card p-4"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="sleek-chip flex h-9 w-9 items-center justify-center">
+                  <Icon size={17} />
+                </span>
+                <h3 className="font-bold">{item.title}</h3>
+              </div>
+              <p className="mt-3 text-sm text-secondary">{item.description}</p>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

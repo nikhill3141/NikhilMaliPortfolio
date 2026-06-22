@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
+import { ExternalLink, PlayCircle } from 'lucide-react';
 
 const DEFAULT_VLOGS = ['https://youtu.be/xFALwbga1Lo?si=cyOSajaz7kY1uRDD'];
 
@@ -20,6 +21,15 @@ function toEmbedUrl(url) {
   return '';
 }
 
+function SectionHeading({ subHeading, heading }) {
+  return (
+    <div>
+      <p className="text-sm text-secondary">{subHeading}</p>
+      <h2 className="text-2xl font-bold">{heading}</h2>
+    </div>
+  );
+}
+
 export default function YouTube() {
   const envLinks = (import.meta.env.VITE_YOUTUBE_VLOGS || '')
     .split(',')
@@ -36,27 +46,22 @@ export default function YouTube() {
     .filter(Boolean);
 
   return (
-    <section id="youtube" className="min-h-[60vh] py-24">
-      <h2 className="mb-4 text-center text-3xl font-semibold text-black dark:text-slate-100">
-        Latest <span className="text-black dark:text-slate-300">YouTube</span> videos
-      </h2>
-      <p className="mx-auto mb-14 max-w-2xl text-center text-black dark:text-slate-400">
-        A practical feed of recent video updates, with links handled from environment configuration.
-      </p>
+    <section id="youtube" className="sleek-section">
+      <SectionHeading subHeading="Latest" heading="YouTube Videos" />
 
-      <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-1 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
         {videos.map((video, index) => (
           <motion.article
             key={video.id}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.45, delay: index * 0.08 }}
-            className="rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xl backdrop-blur-sm"
+            transition={{ duration: 0.4, delay: index * 0.06 }}
+            className="sleek-card group overflow-hidden"
           >
-            <div className="overflow-hidden rounded-2xl border border-slate-300 dark:border-white/10">
+            <div className="relative aspect-video overflow-hidden border-b border-[var(--border)] bg-[var(--surface)]">
               <iframe
-                className="aspect-video w-full"
+                className="h-full w-full"
                 src={video.embed}
                 title="YouTube vlog"
                 loading="lazy"
@@ -64,19 +69,32 @@ export default function YouTube() {
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/25 text-white backdrop-blur-sm">
+                  <PlayCircle size={24} />
+                </span>
+              </div>
             </div>
-            <a
-              href={video.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline dark:text-blue-300"
-            >
-              Watch on YouTube →
-            </a>
+
+            <div className="flex items-center justify-between gap-4 p-5">
+              <div>
+                <h3 className="font-bold">Recent video update</h3>
+                <p className="text-sm text-secondary">A practical note from the channel.</p>
+              </div>
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary transition hover:text-[var(--foreground)]"
+                aria-label="Watch on YouTube"
+                title="Watch on YouTube"
+              >
+                <ExternalLink size={18} />
+              </a>
+            </div>
           </motion.article>
         ))}
       </div>
     </section>
   );
 }
-

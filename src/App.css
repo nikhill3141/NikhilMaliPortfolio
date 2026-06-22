@@ -7,7 +7,7 @@ body {
 }
 
 section {
-  scroll-margin-top: 96px;
+  scroll-margin-top: 112px;
 }
 
 body::-webkit-scrollbar {
@@ -15,7 +15,7 @@ body::-webkit-scrollbar {
 }
 
 .content-card {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  background: var(--background);
+  border-radius: 8px;
 }

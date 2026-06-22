@@ -41,7 +41,7 @@ export default function CustomCursor() {
   return (
     <motion.div
       ref={cursorRef}
-      className="pointer-events-none fixed z-[9999] w-5 h-5 rounded-full border border-blue-400 bg-blue-400/10 mix-blend-difference"
+      className="pointer-events-none  fixed z-[9999] w-5 h-5 rounded-full border border-blue-400 bg-blue-400/10 mix-blend-difference"
       style={{ translateX: x, translateY: y, scale }}
     />
   );
