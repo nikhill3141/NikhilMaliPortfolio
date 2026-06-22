@@ -34,7 +34,7 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function Blog() {
+export default function Blog({ sectionRef }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeSource, setActiveSource] = useState('all');
@@ -84,7 +84,7 @@ export default function Blog() {
       : posts.filter((post) => post.sourceHost === activeSource);
 
   return (
-    <section id="blogs" className="sleek-section">
+    <section ref={sectionRef} data-section="blogs" className="sleek-section">
       <SectionHeading subHeading="Featured" heading="Blogs" />
 
       <div className="mt-8 flex flex-wrap gap-2">

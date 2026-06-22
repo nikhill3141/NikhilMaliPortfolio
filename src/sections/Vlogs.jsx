@@ -30,7 +30,7 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function YouTube() {
+export default function YouTube({ sectionRef }) {
   const envLinks = (import.meta.env.VITE_YOUTUBE_VLOGS || '')
     .split(',')
     .map((item) => item.trim())
@@ -46,7 +46,7 @@ export default function YouTube() {
     .filter(Boolean);
 
   return (
-    <section id="youtube" className="sleek-section">
+    <section ref={sectionRef} data-section="youtube" className="sleek-section">
       <SectionHeading subHeading="Latest" heading="YouTube Videos" />
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">

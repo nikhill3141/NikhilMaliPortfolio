@@ -46,23 +46,13 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function About() {
+export default function About({ sectionRef }) {
   return (
-    <section id="about" className="sleek-section">
+    <section ref={sectionRef} data-section="about" className="sleek-section">
       <SectionHeading subHeading="About" heading="Me" />
 
-      <div className="mt-8 flex flex-col gap-6 md:flex-row">
-        <motion.img
-          src="/Nikcartoonimg.png"
-          alt="Nikhil Mali cartoon avatar"
-          className="h-52 w-52 rounded-md border-2 border-[var(--border)] bg-blue-300 object-contain dark:bg-yellow-300"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.45 }}
-        />
-
-        <div className="flex-1">
+      <div className="mt-8">
+        <div>
           <h3 className="text-2xl font-bold">Nikhil Mali</h3>
           <p className="mt-4 text-secondary">
             I like building products that are easy to understand from the first screen. My work

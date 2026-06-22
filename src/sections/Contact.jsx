@@ -14,7 +14,7 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function Contact() {
+export default function Contact({ sectionRef }) {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +60,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="sleek-section">
+    <section ref={sectionRef} data-section="contact" className="sleek-section">
       <Toaster position="top-right" />
       <SectionHeading subHeading="Contact" heading="Get in touch" />
 

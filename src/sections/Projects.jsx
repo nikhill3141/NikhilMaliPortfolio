@@ -54,9 +54,9 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function Projects() {
+export default function Projects({ sectionRef }) {
   return (
-    <section id="projects" className="sleek-section">
+    <section ref={sectionRef} data-section="projects" className="sleek-section">
       <SectionHeading subHeading="Featured" heading="Projects" />
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">

@@ -22,9 +22,9 @@ const socials = [
   { href: 'https://www.instagram.com/nikhilmali3141/', label: 'Instagram', icon: FaInstagram },
 ];
 
-export default function Hero() {
+export default function Hero({ sectionRef, onNavigate }) {
   return (
-    <section id="home" className="animate-fade-in-blur pt-10">
+    <section ref={sectionRef} data-section="home" className="animate-fade-in-blur pt-10">
       <motion.img
         src="/linkedInprofile-removebg.png"
         alt="Nikhil Mali"
@@ -78,10 +78,17 @@ export default function Hero() {
           <Download size={16} />
           Resume / CV
         </a>
-        <a href="#contact" onClick={playClickSound} className="sleek-button">
+        <button
+          type="button"
+          onClick={() => {
+            playClickSound();
+            onNavigate('contact');
+          }}
+          className="sleek-button"
+        >
           <Mail size={16} />
           Get in touch
-        </a>
+        </button>
       </motion.div>
 
       <motion.div
