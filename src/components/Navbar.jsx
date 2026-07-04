@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Menu, MoonIcon, Sun, SunIcon, X } from 'lucide-react';
 import { playClickSound } from '../utils/playClickSound';
 
 export default function Navbar({ activeSection, items, onNavigate }) {
@@ -31,16 +30,7 @@ export default function Navbar({ activeSection, items, onNavigate }) {
       <nav className="rounded-md bg-[var(--background)]/85 py-3 backdrop-blur-sm">
         <div className="flex items-center justify-between px-2 sm:px-4">
           <div className="flex items-baseline gap-4">
-            <button
-              type="button"
-              onClick={() => {
-                playClickSound();
-                onNavigate('home');
-              }}
-              className="text-base font-bold underline-offset-4 transition hover:underline"
-            >
-              Nikhil Mali
-            </button>
+   
 
             <ul className="hidden items-center gap-4 text-sm font-medium md:flex">
               {items.map((item) => (
@@ -65,18 +55,22 @@ export default function Navbar({ activeSection, items, onNavigate }) {
           </div>
 
           <div className="flex items-center gap-2">
+         
             <button
               aria-label="Toggle dark and light theme"
               onClick={handleThemeToggle}
-              className="sleek-button h-9 w-9 p-0"
-              type="button"
+              className="h-9 w-9 p-0"
+             
             >
-              {isDark ? <Sun size={17} /> : <Moon size={17} />}
+              
+              {isDark ?  <SunIcon size={18}/> :<MoonIcon size={18}/>}
             </button>
 
+
+          {/* menu TODO:handle the menu from the right not on top */}
             <button
               aria-label="Toggle navigation menu"
-              className="sleek-button h-9 w-9 p-0 md:hidden"
+              className=" h-9 w-9 p-0 md:hidden"
               onClick={() => setMenuOpen((open) => !open)}
               type="button"
             >
@@ -88,9 +82,9 @@ export default function Navbar({ activeSection, items, onNavigate }) {
         <AnimatePresence>
           {menuOpen && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              initial={{ right: 1, opacity: 0 }}
+              animate={{ right: 'auto', opacity: 1 }}
+              exit={{ right: 0, opacity: 0 }}
               transition={{ duration: 0.22 }}
               className="overflow-hidden md:hidden"
             >
