@@ -69,7 +69,7 @@ export default function Projects({ sectionRef }) {
             viewport={{ once: true, amount: 0.25 }}
             className="sleek-card group flex h-full flex-col overflow-hidden transition-colors hover:border-[var(--foreground)]"
           >
-            <div className="relative aspect-video overflow-hidden border-b border-[var(--border)] bg-[var(--surface)]">
+            {/* <div className="relative aspect-video overflow-hidden border-b border-[var(--border)] bg-[var(--surface)]">
               <iframe
                 className="h-full w-full"
                 src={project.youtubeEmbed}
@@ -84,7 +84,7 @@ export default function Projects({ sectionRef }) {
                   <PlayCircle size={24} />
                 </span>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex flex-1 flex-col p-5">
               <div className="flex items-start justify-between gap-4">

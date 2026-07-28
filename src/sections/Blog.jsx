@@ -4,14 +4,21 @@ import { CalendarDays, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const PUBLICATIONS = [
-  { host: 'nm-blogs.hashnode.dev', label: 'NM Blogs' },
-  { host: 'nm-javascript.hashnode.dev', label: 'NM JavaScript' },
+  { host: '/nm-blogs.hashnode.dev', label: 'NM Blogs' },
+  { host: '/nm-javascript.hashnode.dev', label: 'NM JavaScript' },
+  { host: '/nm-backend.hashnode.dev', label: 'NM Backend' },
 ];
 
+// Hashnode's API paginates posts (max 20 per page), so we page through with
+// a cursor until there's nothing left. MAX_PAGES is just a safety net so a
+// misbehaving API response can never turn into an infinite loop.
+const PAGE_SIZE = 20;
+const MAX_PAGES = 15; // up to ~300 posts per publication
+
 const BLOG_QUERY = `
-  query Publication($host: String!) {
+  query Publication($host: String!, $after: String) {
     publication(host: $host) {
-      posts(first: 6) {
+      posts(first: ${PAGE_SIZE}, after: $after) {
         edges {
           node {
             title
@@ -19,6 +26,10 @@ const BLOG_QUERY = `
             url
             publishedAt
           }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
         }
       }
     }
@@ -34,54 +45,94 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
+async function fetchAllPostsForPublication(publication) {
+  const posts = [];
+  let after = null;
+  let hasNextPage = true;
+  let pageCount = 0;
+
+  while (hasNextPage && pageCount < MAX_PAGES) {
+    const response = await fetch('https://gql.hashnode.com/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: BLOG_QUERY,
+        variables: { host: publication.host, after },
+      }),
+    });
+
+    const json = await response.json();
+
+    if (json.errors?.length) {
+      throw new Error(json.errors[0]?.message || `Hashnode request failed for ${publication.host}`);
+    }
+
+    const page = json?.data?.publication?.posts;
+    const edges = page?.edges || [];
+
+    posts.push(
+      ...edges.map((edge) => ({
+        ...edge.node,
+        sourceHost: publication.host,
+        sourceLabel: publication.label,
+      }))
+    );
+
+    hasNextPage = Boolean(page?.pageInfo?.hasNextPage);
+    after = page?.pageInfo?.endCursor || null;
+    pageCount += 1;
+  }
+
+  return posts;
+}
+
 export default function Blog({ sectionRef }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeSource, setActiveSource] = useState('all');
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchPosts = async () => {
       try {
         const responses = await Promise.all(
-          PUBLICATIONS.map(async (publication) => {
-            const response = await fetch('https://gql.hashnode.com/', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                query: BLOG_QUERY,
-                variables: { host: publication.host },
-              }),
-            });
-            const json = await response.json();
-            return (
-              json?.data?.publication?.posts?.edges?.map((edge) => ({
-                ...edge.node,
-                sourceHost: publication.host,
-                sourceLabel: publication.label,
-              })) || []
-            );
-          })
+          PUBLICATIONS.map((publication) => fetchAllPostsForPublication(publication))
         );
+
+        if (cancelled) return;
 
         setPosts(
           responses
             .flat()
             .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
         );
-      } catch {
-        setPosts([]);
+      } catch (error) {
+        if (!cancelled) {
+          // Surfacing this in the console makes it much easier to tell a
+          // real API/host problem apart from "there just aren't any posts".
+          console.error('Failed to load Hashnode posts:', error);
+          setPosts([]);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchPosts();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const visiblePosts =
     activeSource === 'all'
       ? posts
       : posts.filter((post) => post.sourceHost === activeSource);
+
+  const countFor = (host) =>
+    host === 'all' ? posts.length : posts.filter((post) => post.sourceHost === host).length;
 
   return (
     <section ref={sectionRef} data-section="blogs" className="sleek-section">
@@ -93,7 +144,7 @@ export default function Blog({ sectionRef }) {
           className={`sleek-button ${activeSource === 'all' ? 'bg-[var(--surface-strong)]' : ''}`}
           type="button"
         >
-          All Posts
+          All Posts{!loading && ` (${countFor('all')})`}
         </button>
         {PUBLICATIONS.map((publication) => (
           <button
@@ -105,6 +156,7 @@ export default function Blog({ sectionRef }) {
             type="button"
           >
             {publication.label}
+            {!loading && ` (${countFor(publication.host)})`}
           </button>
         ))}
       </div>
@@ -120,7 +172,7 @@ export default function Blog({ sectionRef }) {
             </div>
           ))}
         </div>
-      ) : visiblePosts.length === 0 ? (
+      ) : posts.length === 0 ? (
         <div className="sleek-card mt-8 p-6">
           <p className="text-secondary">Could not load Hashnode posts from your publications right now.</p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -137,6 +189,10 @@ export default function Blog({ sectionRef }) {
             ))}
           </div>
         </div>
+      ) : visiblePosts.length === 0 ? (
+        <div className="sleek-card mt-8 p-6">
+          <p className="text-secondary">No posts in this filter yet.</p>
+        </div>
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           {visiblePosts.map((post, index) => (
@@ -144,7 +200,7 @@ export default function Blog({ sectionRef }) {
               key={post.url}
               initial={{ opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.42, delay: index * 0.06 }}
+              transition={{ duration: 0.42, delay: (index % 6) * 0.06 }}
               viewport={{ once: true, amount: 0.3 }}
               className="sleek-card group flex h-full flex-col p-5 transition-colors hover:border-[var(--foreground)]"
             >

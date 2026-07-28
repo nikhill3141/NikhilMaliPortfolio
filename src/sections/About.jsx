@@ -25,16 +25,11 @@ const strengths = [
   },
 ];
 
-const tools = [
-  'REST APIs',
-  'React',
-  'Tailwind CSS',
-  'Node.js',
-  'MongoDB',
-  'PostgreSQL',
-  'Git & GitHub',
-  'Framer Motion',
-  'AI Agents',
+const focusAreas = [
+  'Agentic workflows',
+  'Edge & serverless',
+  'Design systems',
+  'Performance tuning',
 ];
 
 function SectionHeading({ subHeading, heading }) {
@@ -46,28 +41,26 @@ function SectionHeading({ subHeading, heading }) {
   );
 }
 
-export default function About({ sectionRef }) {
+export default function About() {
   return (
-    <section ref={sectionRef} data-section="about" className="sleek-section">
+    <section data-section="about" className="sleek-section">
       <SectionHeading subHeading="About" heading="Me" />
 
       <div className="mt-8">
-        <div>
-          <h3 className="text-2xl font-bold">Nikhil Mali</h3>
-          <p className="mt-4 text-secondary">
-            I like building products that are easy to understand from the first screen. My work
-            usually sits between backend systems, clear interfaces, and small details that make
-            software feel calm to use.
-          </p>
+        <p className="mt-4 max-w-2xl text-base leading-8 text-secondary sm:text-lg">
+          I started out writing small scripts to automate boring tasks, and that
+          curiosity grew into shipping full products end to end. I care about the
+          parts that are easy to skip onboarding flows, empty states, error
+          messages that actually help as much as the architecture underneath.
+        </p>
 
-          <p className="mt-8 font-bold text-secondary">Skills</p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {tools.map((tool) => (
-              <span key={tool} className="sleek-chip px-2 py-1 text-sm font-bold">
-                {tool}
-              </span>
-            ))}
-          </div>
+        <p className="mt-8 font-bold text-secondary">Currently exploring</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {focusAreas.map((area) => (
+            <span key={area} className="sleek-chip px-2 py-1 text-sm font-bold">
+              {area}
+            </span>
+          ))}
         </div>
       </div>
 

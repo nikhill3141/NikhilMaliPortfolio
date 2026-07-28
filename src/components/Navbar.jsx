@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, MoonIcon, Sun, SunIcon, X } from 'lucide-react';
+import { Menu, MoonIcon, SunIcon, X } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { playClickSound } from '../utils/playClickSound';
 
-export default function Navbar({ activeSection, items, onNavigate }) {
+export default function Navbar({ items }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
@@ -30,44 +31,37 @@ export default function Navbar({ activeSection, items, onNavigate }) {
       <nav className="rounded-md bg-[var(--background)]/85 py-3 backdrop-blur-sm">
         <div className="flex items-center justify-between px-2 sm:px-4">
           <div className="flex items-baseline gap-4">
-   
-
             <ul className="hidden items-center gap-4 text-sm font-medium md:flex">
               {items.map((item) => (
                 <li key={item.key}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playClickSound();
-                      onNavigate(item.key);
-                    }}
-                    className={`underline-offset-4 transition hover:underline ${
-                      activeSection === item.key
-                        ? 'font-bold text-[var(--foreground)] decoration-2 underline'
-                        : 'text-secondary'
-                    }`}
+                  <NavLink
+                    to={item.path}
+                    end={item.path === '/'}
+                    onClick={playClickSound}
+                    className={({ isActive }) =>
+                      `underline-offset-4 transition hover:underline ${
+                        isActive
+                          ? 'font-bold text-[var(--foreground)] decoration-2 underline'
+                          : 'text-secondary'
+                      }`
+                    }
                   >
                     {item.label}
-                  </button>
+                  </NavLink>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="flex items-center gap-2">
-         
             <button
               aria-label="Toggle dark and light theme"
               onClick={handleThemeToggle}
               className="h-9 w-9 p-0"
-             
             >
-              
-              {isDark ?  <SunIcon size={18}/> :<MoonIcon size={18}/>}
+              {isDark ? <SunIcon size={18} /> : <MoonIcon size={18} />}
             </button>
 
-
-          {/* menu TODO:handle the menu from the right not on top */}
             <button
               aria-label="Toggle navigation menu"
               className=" h-9 w-9 p-0 md:hidden"
@@ -91,19 +85,21 @@ export default function Navbar({ activeSection, items, onNavigate }) {
               <ul className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] px-2 pt-4 text-base sm:px-4">
                 {items.map((item) => (
                   <li key={item.key}>
-                    <button
-                      type="button"
+                    <NavLink
+                      to={item.path}
+                      end={item.path === '/'}
                       onClick={() => {
                         playClickSound();
-                        onNavigate(item.key);
                         setMenuOpen(false);
                       }}
-                      className={`block py-1 text-left underline-offset-4 transition hover:underline ${
-                        activeSection === item.key ? 'font-bold' : 'text-secondary'
-                      }`}
+                      className={({ isActive }) =>
+                        `block py-1 text-left underline-offset-4 transition hover:underline ${
+                          isActive ? 'font-bold' : 'text-secondary'
+                        }`
+                      }
                     >
                       {item.label}
-                    </button>
+                    </NavLink>
                   </li>
                 ))}
               </ul>

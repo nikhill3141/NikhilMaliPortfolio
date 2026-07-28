@@ -25,7 +25,7 @@ export function playClickSound() {
 
     // A brief high-frequency tone with a fast attack/decay -> "click" feel.
     osc.type = 'sine';
-    osc.frequency.value = 1400;
+    osc.frequency.value = 6000;
 
     const t = audioCtx.currentTime;
     gain.gain.setValueAtTime(0.0001, t);

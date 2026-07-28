@@ -19,3 +19,7 @@ body::-webkit-scrollbar {
   background: var(--background);
   border-radius: 8px;
 }
+
+main > section:first-child {
+  margin-top: 0;
+}
