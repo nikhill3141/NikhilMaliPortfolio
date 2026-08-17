@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getAllBlogs, findBlogBySlug } from "../services/blog.service.js";
+import { getAllBlogs, findBlogBySlug, createBlogService } from "../services/blog.service.js";
 
 //get blogs 
 export const getBlogs = async (_req: Request, res: Response) => {
@@ -21,3 +21,12 @@ export const getBlogBySlug = async (req: Request, res: Response) => {
     data: blog,
   });
 };
+
+//create blog
+export const createBlog = async (req:Request, res:Response) => {
+  const blog = await createBlogService(req.body)
+  res.status(201).json({
+    success:true,
+    data: blog
+  })
+}
