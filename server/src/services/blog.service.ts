@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js"
+import { CreateBlogInput } from "../validations/blog.validation.js";
 
 //get all blogs
 export const getAllBlogs = async ()=>{
@@ -20,3 +21,11 @@ export const findBlogBySlug = async (slug: string) => {
 
   return blog;
 };
+
+//create blog
+export const createBlogService = async (data: CreateBlogInput) => {
+  const blog = await prisma.blog.create({
+    data
+  })
+  return blog
+}
