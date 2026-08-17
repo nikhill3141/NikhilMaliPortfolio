@@ -2,16 +2,16 @@
   "name": "portfolio-backend",
   "version": "1.0.0",
   "description": "",
-    "scripts": {
-      "dev": "tsx watch src/server.ts",
-      "build": "tsc",
-      "start": "node dist/server.js",
-      "lint": "eslint .",
-      "format": "prettier --write .",
-      "prisma:generate": "prisma generate",
-      "prisma:migrate": "prisma migrate dev",
-      "prisma:studio": "prisma studio"
-    },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -24,6 +24,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.10.0",
@@ -36,11 +37,13 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
+    "pg": "^8.23.0",
     "sharp": "^0.35.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
