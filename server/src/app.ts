@@ -5,8 +5,8 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import compression from "compression";
 import errorMiddelware from './middlewares/error.middleware.js'
-import ApiError from './utils/ApiError.js'
 import apiRoutes from './routes/index.routes.js'
+
 
 const app = express()
 
@@ -34,7 +34,7 @@ app.use(cookieParser())
 //compression
 app.use(compression())
 
-//health check
+//custom api v1
 app.use("/api/v1", apiRoutes)
 
 

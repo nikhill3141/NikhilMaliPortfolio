@@ -31,4 +31,8 @@ export const createBlogSchema = z.object({
   categoryId: z.string().min(1, "Category ID is required"),
 });
 
+export const updateBlogSchema = createBlogSchema.partial();
+
+
 export type CreateBlogInput = z.infer<typeof createBlogSchema>;
+export type UpdateBlogInput = z.infer<typeof updateBlogSchema>;
