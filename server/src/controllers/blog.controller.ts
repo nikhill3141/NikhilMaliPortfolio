@@ -1,14 +1,9 @@
 import { Request, Response } from "express";
-import { getAllBlogs, findBlogBySlug, createBlogService, updateBlogService, deleteBlogService } from "../services/blog.service.js";
-import { success } from "zod";
+import { getAllBlogs, findBlogBySlug, createBlogService } from "../services/blog.service.js";
 
 //get blogs 
-export const getBlogs = async (req: Request, res: Response) => {
-
-  const page = Number(req.query.page ?? 1)
-  const limit = Number(req.query.limit ?? 10)
-  
-  const blogs = await getAllBlogs(page, limit)
+export const getBlogs = async (_req: Request, res: Response) => {
+  const blogs = await getAllBlogs()
   if(!blogs) return 
   res.status(200).json({
     success: true,
@@ -35,23 +30,3 @@ export const createBlog = async (req:Request, res:Response) => {
     data: blog
   })
 }
-
-//update blog
-export const updateBlog = async (req:Request, res:Response) =>{
-  const id = String(req.params.id)
-  const updatedData = req.body
-  const updatedBlog = await updateBlogService(id, updatedData)
-  res.status(200).json({
-    success:true,
-    data:updatedBlog
-  })
-}
-
-//delete blog
-export const deleteBlog = async (req:Request, res:Response)=> {
-  const id = String(req.params.id);
-  const blog = await deleteBlogService(id)
-
-  res.status(204).send()
-}
-
