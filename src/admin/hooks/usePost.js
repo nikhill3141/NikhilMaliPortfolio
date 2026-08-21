@@ -1,11 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getPosts } from "../api/post";
 
 
-export const usePosts = (page = 1, limit = 10) => {
+export const usePosts = (page = 1, limit = 10, search="", status="") => {
   return useQuery({
-    queryKey: ["adminPosts", page, limit],
-    queryFn: () => getPosts({ page, limit }),
-    placeholderData: (previousData) => previousData,
+    queryKey: ["posts", page, limit, search, status],
+    queryFn: async () => {
+      return await getPosts({page, limit, search, status});
+    },
+    placeholderData: keepPreviousData,
   });
 };

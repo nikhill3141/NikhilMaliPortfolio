@@ -1,10 +1,19 @@
 import { Link } from "react-router-dom";
 import { FilePlus, MoreHorizontal } from "lucide-react";
 import { usePosts } from "../hooks/usePost";
-
+import { useState } from "react";
+import PostActions from "../components/PostActions";
 
 const Posts = () => {
-  const { data, isLoading, isError, error } = usePosts();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const { data, isLoading, isError, error } = usePosts(
+    page,
+    10,
+    search,
+    status,
+  );
 
   if (isLoading) {
     return (
@@ -52,6 +61,36 @@ const Posts = () => {
           <FilePlus size={17} />
           New post
         </Link>
+      </div>
+
+      {/* search bar and filter */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Search posts..."
+            className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+          />
+        </div>
+
+        <select
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            setPage(1);
+          }}
+          className="rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-400"
+        >
+          <option value="">All statuses</option>
+          <option value="PUBLISHED">Published</option>
+          <option value="DRAFT">Draft</option>
+          <option value="ARCHIVED">Archived</option>
+        </select>
       </div>
 
       {/* Table */}
@@ -110,12 +149,7 @@ const Posts = () => {
                   </td>
 
                   <td className="px-5 py-4 text-right">
-                    <button
-                      type="button"
-                      className="rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-900"
-                    >
-                      <MoreHorizontal size={18} />
-                    </button>
+                    <PostActions post={post} />
                   </td>
                 </tr>
               ))}
@@ -137,12 +171,34 @@ const Posts = () => {
 
       {/* Pagination info */}
       {pagination && (
-        <div className="mt-4 flex justify-between text-sm text-zinc-500">
-          <span>
-            Page {pagination.page} of {pagination.totalPage}
-          </span>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-sm text-zinc-500">
+            <span>
+              Page {pagination.page} of {pagination.totalPage}
+            </span>
 
-          <span>{pagination.total} total posts</span>
+            <span className="ml-3">{pagination.total} total posts</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={page === 1}
+              onClick={() => setPage((prev) => prev - 1)}
+              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+
+            <button
+              type="button"
+              disabled={page >= pagination.totalPage}
+              onClick={() => setPage((prev) => prev + 1)}
+              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </div>

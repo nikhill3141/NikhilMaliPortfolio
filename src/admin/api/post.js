@@ -1,12 +1,27 @@
 import api from "../../lib/api"
 
 
-export const getPosts = async ({page=1, limit=10}= {}) => {
-  const response = await api.get("/blogs/admin", {params:{page, limit}})
+export const getPosts = async ({page=1, limit=10,search="", status=""}= {}) => {
+   const params = new URLSearchParams();
+    params.set("page", page);
+    params.set("limit", limit);
+    if (search.trim()) {
+      params.set("search", search.trim());
+    }
+    if (status) {
+      params.set("status", status);
+    }
+  const response = await api.get(`/blogs/admin?${params.toString()}`)
   return response.data
 }
 export const getPublicPosts = async ({page=1, limit=10}= {}) => {
   const response = await api.get("/blogs", {params:{page, limit}})
+  return response.data
+}
+
+export const getPostbyId = async (id) => {
+  const response = await api.get(`/blogs/${id}`)
+  if(response.data.success === 'false') return false
   return response.data
 }
 export const getPostbySlug = async (slug) => {

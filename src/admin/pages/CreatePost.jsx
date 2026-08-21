@@ -11,7 +11,7 @@ const CreatePost = () => {
   const [excerpt, setExcerpt] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [categories, setCategories] = useState([]);
-  const [newPost, setNewPost] = useState(null);
+  const [PostId, setPostId] = useState(null);
   const [content, setContent] = useState({
     type: "doc",
     content: [
@@ -61,7 +61,7 @@ const {data, isLoading, isError} = useGetCategories()
     };
     const data = await createPost(postDtata);
     CONSOLE.log("Post created:", data);
-    setNewPost(data?.post?._id);
+    setPostId(data?.post?._id);
     
   };
   const generateSlug = (value) => {
@@ -73,10 +73,8 @@ const {data, isLoading, isError} = useGetCategories()
       .replace(/-+/g, "-");
   };
 
-  const handlePublish = async () => {
-    if (!newPost) {
-    await publishedPost(newPost);
-  }
+const handlePublish = async () => {
+  await publishedPost(PostId);
 }
 
   return (
