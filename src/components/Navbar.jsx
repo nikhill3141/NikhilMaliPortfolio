@@ -28,7 +28,7 @@ export default function Navbar({ items }) {
 
   return (
     <header className="sticky top-0 z-50 mx-auto w-full max-w-3xl px-4 pt-3 sm:px-6">
-      <nav className="rounded-md bg-[var(--background)]/85 py-3 backdrop-blur-sm">
+      <nav className="rounded-md bg-[var(--background)]/85 py-1 backdrop-blur-sm">
         <div className="flex items-center justify-between px-2 sm:px-4">
           <div className="flex items-baseline gap-4">
             <ul className="hidden items-center gap-4 text-sm font-medium md:flex">

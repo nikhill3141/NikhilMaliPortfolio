@@ -32,8 +32,10 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.18.2",
+    "react-type-animation": "^3.2.0",
     "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.11",
+    "tech-stack-icons": "^3.7.1",
     "three": "^0.178.0"
   },
   "devDependencies": {
