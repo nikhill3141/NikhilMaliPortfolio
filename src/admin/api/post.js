@@ -20,9 +20,9 @@ export const getPublicPosts = async ({page=1, limit=10}= {}) => {
 }
 
 export const getPostbyId = async (id) => {
-  const response = await api.get(`/blogs/${id}`)
-  if(response.data.success === 'false') return false
+  const response = await api.get(`/blogs/post/${id}`)
   return response.data
+  
 }
 export const getPostbySlug = async (slug) => {
   const response = await api.get(`/blogs/${slug}`)
@@ -35,7 +35,7 @@ export const createPost = async (data) => {
   return response.data
 }
 
-export const updatePost = async (id, data) => {
+export const updatePost = async ({id, data}) => {
   const response = await api.patch(`/blogs/${id}`,data)
   return response.data
 }

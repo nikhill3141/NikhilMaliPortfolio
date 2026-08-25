@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { FilePlus, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FilePlus, Search } from "lucide-react";
 import { usePosts } from "../hooks/usePost";
 import { useState } from "react";
 import PostActions from "../components/PostActions";
@@ -14,6 +14,7 @@ const Posts = () => {
     search,
     status,
   );
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -39,33 +40,30 @@ const Posts = () => {
   const pagination = data?.blogs?.data;
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-6xl">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-zinc-500">Content</p>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
+          Posts
+        </h1>
 
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-950">
-            Posts
-          </h1>
-
-          <p className="mt-2 text-sm text-zinc-500">
-            Create, manage and publish your blog posts.
-          </p>
-        </div>
-
-        <Link
-          to="/admin/posts/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium !text-white transition hover:bg-zinc-800"
+        <button
+          type="button"
+          onClick={() => navigate("/admin/posts/new")}
+          className="inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
         >
-          <FilePlus size={17} />
+          <FilePlus size={16} />
           New post
-        </Link>
+        </button>
       </div>
 
-      {/* search bar and filter */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full sm:max-w-sm">
+      {/* Search + filter */}
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative w-full sm:max-w-xs">
+          <Search
+            size={15}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+          />
           <input
             type="text"
             value={search}
@@ -73,82 +71,88 @@ const Posts = () => {
               setSearch(e.target.value);
               setPage(1);
             }}
-            placeholder="Search posts..."
-            className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+            placeholder="Search"
+            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400"
           />
         </div>
 
-        <select
-          value={status}
-          onChange={(e) => {
-            setStatus(e.target.value);
-            setPage(1);
-          }}
-          className="rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-700 outline-none focus:border-zinc-400"
-        >
-          <option value="">All statuses</option>
-          <option value="PUBLISHED">Published</option>
-          <option value="DRAFT">Draft</option>
-          <option value="ARCHIVED">Archived</option>
-        </select>
+        <div className="flex gap-1.5">
+          {["", "PUBLISHED", "DRAFT", "ARCHIVED"].map((s) => (
+            <button
+              key={s || "all"}
+              type="button"
+              onClick={() => {
+                setStatus(s);
+                setPage(1);
+              }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                status === s
+                  ? "bg-zinc-950 text-white"
+                  : "text-zinc-500 hover:bg-zinc-100"
+              }`}
+            >
+              {s ? s.charAt(0) + s.slice(1).toLowerCase() : "All"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="border-b border-zinc-200 bg-zinc-50">
-              <tr>
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Post
+            <thead>
+              <tr className="border-b border-zinc-100">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
+                  Title
                 </th>
-
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
                   Status
                 </th>
-
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
                   Views
                 </th>
-
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
                   Updated
                 </th>
-
                 <th className="px-5 py-3">
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-zinc-50">
               {posts.map((post) => (
-                <tr key={post.id} className="transition hover:bg-zinc-50">
-                  <td className="px-5 py-4">
-                    <div>
-                      <p className="max-w-md truncate text-sm font-medium text-zinc-900">
-                        {post.title}
-                      </p>
-
-                      <p className="mt-1 max-w-md truncate text-xs text-zinc-500">
-                        {post.excerpt || "No excerpt"}
-                      </p>
-                    </div>
+                <tr
+                  key={post.id}
+                  onClick={() => navigate(`/admin/posts/${post.id}/edit`)}
+                  className="cursor-pointer transition hover:bg-zinc-50"
+                >
+                  <td className="px-5 py-3.5">
+                    <p className="max-w-md truncate text-sm font-medium text-zinc-900">
+                      {post.title}
+                    </p>
                   </td>
 
-                  <td className="px-5 py-4">
-                    <StatusBadge status={post.status} />
+                  <td className="px-5 py-3.5">
+                    <StatusDot status={post.status} />
                   </td>
 
-                  <td className="px-5 py-4 text-sm text-zinc-600">
+                  <td className="px-5 py-3.5 text-sm text-zinc-500">
                     {post.views}
                   </td>
 
-                  <td className="px-5 py-4 text-sm text-zinc-500">
-                    {new Date(post.updatedAt).toLocaleDateString()}
+                  <td className="px-5 py-3.5 text-sm text-zinc-500">
+                    {new Date(post.updatedAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                    })}
                   </td>
 
-                  <td className="px-5 py-4 text-right">
+                  <td
+                    className="px-5 py-3.5 text-right"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <PostActions post={post} />
                   </td>
                 </tr>
@@ -157,35 +161,26 @@ const Posts = () => {
           </table>
         </div>
 
-        {/* Empty state */}
         {posts.length === 0 && (
           <div className="px-6 py-16 text-center">
             <p className="text-sm font-medium text-zinc-900">No posts yet</p>
-
-            <p className="mt-1 text-sm text-zinc-500">
-              Create your first blog post to get started.
-            </p>
           </div>
         )}
       </div>
 
-      {/* Pagination info */}
+      {/* Pagination */}
       {pagination && (
-        <div className="mt-4 flex items-center justify-between">
-          <div className="text-sm text-zinc-500">
-            <span>
-              Page {pagination.page} of {pagination.totalPage}
-            </span>
-
-            <span className="ml-3">{pagination.total} total posts</span>
-          </div>
+        <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
+          <span>
+            Page {pagination.page} of {pagination.totalPage}
+          </span>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
-              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -194,7 +189,7 @@ const Posts = () => {
               type="button"
               disabled={page >= pagination.totalPage}
               onClick={() => setPage((prev) => prev + 1)}
-              className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -205,19 +200,18 @@ const Posts = () => {
   );
 };
 
-const StatusBadge = ({ status }) => {
+const StatusDot = ({ status }) => {
   const styles = {
-    PUBLISHED: "bg-emerald-50 text-emerald-700",
-    DRAFT: "bg-amber-50 text-amber-700",
-    ARCHIVED: "bg-zinc-100 text-zinc-600",
+    PUBLISHED: "bg-emerald-500",
+    DRAFT: "bg-amber-500",
+    ARCHIVED: "bg-zinc-400",
   };
 
   return (
-    <span
-      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-        styles[status] || styles.ARCHIVED
-      }`}
-    >
+    <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600">
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${styles[status] || styles.ARCHIVED}`}
+      />
       {status}
     </span>
   );

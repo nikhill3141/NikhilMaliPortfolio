@@ -7,6 +7,7 @@ import "./App.css";
 import PublicLayout from "./layout/PublicLayout";
 import AdminRoutes from "./admin/routes/AdminRoutes";
 import HomePage from "./layout/HomePage";
+import BlogPost from "./components/BlogPost";
 
 
 
@@ -15,15 +16,16 @@ function App() {
     <Routes>
       {/* Public website */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<HomePage/>} />
+        <Route path="/" element={<HomePage />} />
 
-        <Route path="/projects" element={<Projects/>} />
+        <Route path="/projects" element={<Projects />} />
 
-        <Route path="/videos" element={<YouTube/>} />
+        <Route path="/videos" element={<YouTube />} />
 
-        <Route path="/blogs" element={<Blog/>} />
+        <Route path="/blogs" element={<Blog />} />
 
-        <Route path="/contact" element={<Contact/>} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/blogs/:slug" element={<BlogPost />} />
       </Route>
 
       {/* Admin application */}

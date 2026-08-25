@@ -1,6 +1,8 @@
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { usePostMutations } from "../hooks/usePostMutations";
+import { Link } from "react-router-dom";
+
 
 
 const PostActions = ({ post }) => {
@@ -24,6 +26,8 @@ const PostActions = ({ post }) => {
     setOpen(false);
   };
 
+
+
   return (
     <div className="relative">
       <button
@@ -36,12 +40,13 @@ const PostActions = ({ post }) => {
 
       {open && (
         <div className="absolute right-0 z-20 mt-2 w-40 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg">
-          <button
-            type="button"
-            className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50"
+          <Link
+            to={`/admin/posts/${post.id}/edit`}
+            onClick={() => setOpen(false)}
+            className="block w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50"
           >
             Edit
-          </button>
+          </Link>
 
           <button
             type="button"

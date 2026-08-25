@@ -1,238 +1,239 @@
-// eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
-import { CalendarDays, ExternalLink } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { motion } from "framer-motion";
+import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
+import { BLOG_POSTS } from "../DemoData/Data";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const PUBLICATIONS = [
-  { host: '/nm-blogs.hashnode.dev', label: 'NM Blogs' },
-  { host: '/nm-javascript.hashnode.dev', label: 'NM JavaScript' },
-  { host: '/nm-backend.hashnode.dev', label: 'NM Backend' },
-];
 
-// Hashnode's API paginates posts (max 20 per page), so we page through with
-// a cursor until there's nothing left. MAX_PAGES is just a safety net so a
-// misbehaving API response can never turn into an infinite loop.
-const PAGE_SIZE = 20;
-const MAX_PAGES = 15; // up to ~300 posts per publication
-
-const BLOG_QUERY = `
-  query Publication($host: String!, $after: String) {
-    publication(host: $host) {
-      posts(first: ${PAGE_SIZE}, after: $after) {
-        edges {
-          node {
-            title
-            brief
-            url
-            publishedAt
-          }
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
-    }
-  }
-`;
 
 function SectionHeading({ subHeading, heading }) {
   return (
     <div>
-      <p className="text-sm text-secondary">{subHeading}</p>
-      <h2 className="text-2xl font-bold">{heading}</h2>
+      <p className="text-sm font-medium text-secondary">{subHeading}</p>
+
+      <h2 className="mt-1 text-3xl font-bold tracking-tight md:text-4xl">
+        {heading}
+      </h2>
     </div>
   );
 }
 
-async function fetchAllPostsForPublication(publication) {
-  const posts = [];
-  let after = null;
-  let hasNextPage = true;
-  let pageCount = 0;
-
-  while (hasNextPage && pageCount < MAX_PAGES) {
-    const response = await fetch('https://gql.hashnode.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: BLOG_QUERY,
-        variables: { host: publication.host, after },
-      }),
-    });
-
-    const json = await response.json();
-
-    if (json.errors?.length) {
-      throw new Error(json.errors[0]?.message || `Hashnode request failed for ${publication.host}`);
-    }
-
-    const page = json?.data?.publication?.posts;
-    const edges = page?.edges || [];
-
-    posts.push(
-      ...edges.map((edge) => ({
-        ...edge.node,
-        sourceHost: publication.host,
-        sourceLabel: publication.label,
-      }))
-    );
-
-    hasNextPage = Boolean(page?.pageInfo?.hasNextPage);
-    after = page?.pageInfo?.endCursor || null;
-    pageCount += 1;
-  }
-
-  return posts;
+function formatDate(date) {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 export default function Blog({ sectionRef }) {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeSource, setActiveSource] = useState('all');
+  
+  const featuredPost =
+    BLOG_POSTS.find((post) => post.featured) || BLOG_POSTS[0];
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchPosts = async () => {
-      try {
-        const responses = await Promise.all(
-          PUBLICATIONS.map((publication) => fetchAllPostsForPublication(publication))
-        );
-
-        if (cancelled) return;
-
-        setPosts(
-          responses
-            .flat()
-            .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-        );
-      } catch (error) {
-        if (!cancelled) {
-          // Surfacing this in the console makes it much easier to tell a
-          // real API/host problem apart from "there just aren't any posts".
-          console.error('Failed to load Hashnode posts:', error);
-          setPosts([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchPosts();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const visiblePosts =
-    activeSource === 'all'
-      ? posts
-      : posts.filter((post) => post.sourceHost === activeSource);
-
-  const countFor = (host) =>
-    host === 'all' ? posts.length : posts.filter((post) => post.sourceHost === host).length;
+  const remainingPosts = BLOG_POSTS.filter(
+    (post) => post.id !== featuredPost?.id,
+  );
 
   return (
     <section ref={sectionRef} data-section="blogs" className="sleek-section">
-      <SectionHeading subHeading="Featured" heading="Blogs" />
+      {/* Header */}
 
-      <div className="mt-8 flex flex-wrap gap-2">
-        <button
-          onClick={() => setActiveSource('all')}
-          className={`sleek-button ${activeSource === 'all' ? 'bg-[var(--surface-strong)]' : ''}`}
-          type="button"
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <SectionHeading subHeading="Writing & Ideas" heading="Blogs" />
+      </div>
+
+      {/* Featured Blog */}
+
+      {featuredPost && (
+        <motion.article
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="group mt-10 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]"
         >
-          All Posts{!loading && ` (${countFor('all')})`}
-        </button>
-        {PUBLICATIONS.map((publication) => (
-          <button
-            key={publication.host}
-            onClick={() => setActiveSource(publication.host)}
-            className={`sleek-button ${
-              activeSource === publication.host ? 'bg-[var(--surface-strong)]' : ''
-            }`}
-            type="button"
+          <div className="grid md:grid-cols-[100px_1fr_auto] md:items-center">
+            {/* Number */}
+
+            <div className="hidden h-full border-r border-[var(--border)] p-6 md:flex md:items-center md:justify-center">
+              <span className="text-5xl font-bold tracking-tighter text-secondary/30">
+                01
+              </span>
+            </div>
+
+            {/* Content */}
+
+            <div className="p-6 md:p-8">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-secondary">
+                <span className="font-semibold uppercase tracking-[0.14em]">
+                  Featured
+                </span>
+
+                <span className="h-1 w-1 rounded-full bg-[var(--muted)]" />
+
+                <span className="flex items-center gap-1.5">
+                  <CalendarDays size={13} />
+
+                  {formatDate(featuredPost.publishedAt)}
+                </span>
+
+                <span className="h-1 w-1 rounded-full bg-[var(--muted)]" />
+
+                <span className="flex items-center gap-1.5">
+                  <Clock3 size={13} />
+
+                  {featuredPost.readTime}
+                </span>
+              </div>
+
+              <h3 className="mt-4 max-w-3xl text-2xl font-bold leading-tight tracking-tight md:text-3xl">
+                {featuredPost.title}
+              </h3>
+
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-secondary">
+                {featuredPost.excerpt}
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+                {featuredPost.tags.map((tag) => (
+                  <span key={tag} className="text-xs text-secondary">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Read */}
+
+            <div className="border-t border-[var(--border)] p-5 md:border-l md:border-t-0 md:p-8">
+              <Link
+                to={`/blogs/${featuredPost.slug}`}
+                className="flex w-full items-center justify-between gap-3 text-sm font-semibold md:w-auto"
+              >
+                <span className="md:hidden">Read article</span>
+
+                <span className="hidden md:block">Read</span>
+
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:bg-[var(--foreground)] group-hover:text-[var(--background)]">
+                  <ArrowUpRight size={17} />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </motion.article>
+      )}
+
+      {/* Blog List */}
+
+      <div className="mt-4 border-t border-[var(--border)]">
+        {remainingPosts.map((post, index) => (
+          <motion.article
+            key={post.id}
+            initial={{
+              opacity: 0,
+              y: 12,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.35,
+              delay: index * 0.04,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            className="group border-b border-[var(--border)] py-6 transition-colors  md:py-7"
           >
-            {publication.label}
-            {!loading && ` (${countFor(publication.host)})`}
-          </button>
+            <div className="grid gap-5 md:grid-cols-[60px_minmax(0,1fr)_170px_48px] md:items-center md:gap-6">
+              {/* Number */}
+
+              <div className="hidden md:block">
+                <span className="text-sm font-medium tabular-nums text-secondary">
+                  {String(index + 2).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Blog Content */}
+
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold leading-snug tracking-tight md:text-xl">
+                  {post.title}
+                </h3>
+
+                <p className="mt-2 max-w-3xl line-clamp-2 text-sm leading-6 text-secondary">
+                  {post.excerpt}
+                </p>
+
+                {/* Tags */}
+
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+                  {post.tags.slice(0, 3).map((tag) => (
+                    <span key={tag} className="text-xs text-secondary">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Date + Read Time */}
+
+              <div className="flex items-center gap-4 text-xs text-secondary md:flex-col md:items-end md:gap-1.5">
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <CalendarDays size={13} />
+
+                  {formatDate(post.publishedAt)}
+                </span>
+
+                <span className="h-1 w-1 rounded-full bg-[var(--muted)] md:hidden" />
+
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <Clock3 size={13} />
+
+                  {post.readTime}
+                </span>
+              </div>
+
+              {/* Arrow */}
+
+              <div
+                className="hidden md:flex md:justify-end"
+                
+              >
+                <Link
+                  to={`/blogs/${post.slug}`}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-secondary transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] group-hover:text-[var(--background)]"
+                >
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile Arrow */}
+
+            <div className="mt-5 flex items-center justify-between md:hidden">
+              <span className="text-xs font-medium text-secondary">
+                Read article
+              </span>
+
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-secondary">
+                <ArrowUpRight size={16} />
+              </span>
+            </div>
+          </motion.article>
         ))}
       </div>
 
-      {loading ? (
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, idx) => (
-            <div key={idx} className="sleek-card h-52 animate-pulse p-5">
-              <div className="h-5 w-3/4 rounded bg-[var(--surface-strong)]" />
-              <div className="mt-5 h-3 w-full rounded bg-[var(--surface)]" />
-              <div className="mt-2 h-3 w-5/6 rounded bg-[var(--surface)]" />
-              <div className="mt-8 h-8 w-32 rounded bg-[var(--surface-strong)]" />
-            </div>
-          ))}
-        </div>
-      ) : posts.length === 0 ? (
-        <div className="sleek-card mt-8 p-6">
-          <p className="text-secondary">Could not load Hashnode posts from your publications right now.</p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {PUBLICATIONS.map((publication) => (
-              <a
-                key={publication.host}
-                href={`https://${publication.host}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sleek-button"
-              >
-                Open {publication.label}
-              </a>
-            ))}
-          </div>
-        </div>
-      ) : visiblePosts.length === 0 ? (
-        <div className="sleek-card mt-8 p-6">
-          <p className="text-secondary">No posts in this filter yet.</p>
-        </div>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {visiblePosts.map((post, index) => (
-            <motion.article
-              key={post.url}
-              initial={{ opacity: 0, y: 22 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.42, delay: (index % 6) * 0.06 }}
-              viewport={{ once: true, amount: 0.3 }}
-              className="sleek-card group flex h-full flex-col p-5 transition-colors hover:border-[var(--foreground)]"
-            >
-              <a href={post.url} target="_blank" rel="noopener noreferrer">
-                <h3 className="line-clamp-2 text-xl font-bold leading-tight group-hover:underline group-hover:underline-offset-4">
-                  {post.title}
-                </h3>
-              </a>
-              <p className="mt-4 line-clamp-3 text-secondary">{post.brief || ''}</p>
+      {/* Footer */}
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                <span className="sleek-chip px-2 py-1 text-xs font-bold">{post.sourceLabel}</span>
-              </div>
+      <div className="mt-6 flex items-center justify-between text-xs text-secondary">
+        <span>{BLOG_POSTS.length} articles</span>
 
-              <div className="mt-auto flex items-center justify-between gap-3 pt-6 text-sm text-secondary">
-                <time className="flex items-center gap-2" dateTime={post.publishedAt}>
-                  <CalendarDays size={15} />
-                  {new Date(post.publishedAt).toLocaleDateString()}
-                </time>
-                <a
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition hover:text-[var(--foreground)]"
-                >
-                  Read <ExternalLink size={14} />
-                </a>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-      )}
+        <span>More coming soon</span>
+      </div>
     </section>
   );
 }

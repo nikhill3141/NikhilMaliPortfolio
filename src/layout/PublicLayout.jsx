@@ -5,11 +5,11 @@ import Footer from '../components/Footer';
 function PublicLayout() {
 
   const sections = [
-    { key: 'home', label: 'Home', path: '/' },
-    { key: 'projects', label: 'Projects', path: '/projects' },
-    { key: 'youtube', label: 'Videos', path: '/videos' },
-    { key: 'blogs', label: 'Blogs', path: '/blogs' },
-    { key: 'contact', label: 'Contact', path: '/contact' },
+    { key: "home", label: "Home", path: "/" },
+    { key: "projects", label: "Projects", path: "/projects" },
+    { key: "blogs", label: "Blogs", path: "/blogs" },
+    { key: "youtube", label: "Videos", path: "/videos" },
+    { key: "contact", label: "Contact", path: "/contact" },
   ];
   return (
     <>

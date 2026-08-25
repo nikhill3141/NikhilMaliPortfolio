@@ -5,6 +5,7 @@ import AdminLayout from "../layouts/AdminLayout"
 import ProtectedRoute from "./ProtectedRoute"
 import Posts from "../pages/Posts"
 import CreatePost from "../pages/CreatePost"
+import EditPost from "../pages/EditPost"
 
 
 const AdminRoutes = () => {
@@ -18,6 +19,7 @@ const AdminRoutes = () => {
           <Route path="" element={<Dashboard />} />
           <Route path="posts" element={<Posts />} />
           <Route path="posts/new" element={<CreatePost />} />
+          <Route path="posts/:id/edit" element={<EditPost />} />
         </Route>
       </Route>
     </Routes>

@@ -4,8 +4,9 @@ import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 
 import EditorToolbar from "./EditorToolbar";
+import { useEffect } from "react";
 
-const BlogEditor = ({ onChange }) => {
+const BlogEditor = ({ onChange,content }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -38,12 +39,14 @@ const BlogEditor = ({ onChange }) => {
     },
   });
 
-  if (!editor) {
-    return null;
-  }
+ useEffect(() => {
+   if (!editor) return;
+
+   editor.commands.setContent(content || "");
+ }, [editor, content]);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white p-2">
+    <div >
       <div className=" fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-2xl border border-zinc-200 bg-white/95 p-2 shadow-lg shadow-zinc-900/10 backdrop-blur-md ">
         <EditorToolbar editor={editor} />
       </div>
