@@ -1,5 +1,6 @@
 // CreatePost.jsx
 import { useState, useEffect, useRef } from "react";
+import CoverImageUpload from "../components/CoverImageUpload";
 
 import { createPost, publishedPost } from "../api/post";
 import { useGetCategories } from "../hooks/useGetCategories";
@@ -37,6 +38,11 @@ const CreatePost = () => {
     type: "doc",
     content: [{ type: "paragraph" }],
   });
+  const [coverImage, setCoverImage] = useState({
+    url: "",
+    publicId: "",
+  });
+
 
   const { data, isLoading, isError, error } = useGetCategories();
 
@@ -58,9 +64,17 @@ const CreatePost = () => {
     e?.preventDefault();
     setSaving(true);
     try {
-      const postData = { title, slug, excerpt, categoryId, content };
+     const postData = {
+       title,
+       slug,
+       excerpt,
+       categoryId,
+       content,
+       coverImage: coverImage.url || undefined,
+       coverImagePublicId: coverImage.publicId || undefined,
+     };
       const res = await createPost(postData);
-      setPostId(res?.post?._id);
+      setPostId(res?.post?.id);
     } finally {
       setSaving(false);
     }
@@ -175,6 +189,8 @@ const CreatePost = () => {
             className="border-b border-transparent bg-transparent text-zinc-500 outline-none hover:border-zinc-200 focus:border-zinc-400"
           />
         </div>
+        {/* Cover image */}
+        <CoverImageUpload value={coverImage} onChange={setCoverImage} />
 
         {/* Editor — no card, no border, same page as everything above */}
         <div className="mt-10">

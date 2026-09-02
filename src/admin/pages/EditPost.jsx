@@ -1,18 +1,28 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Eye, Save, Sparkles } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 import { useGetOnePost } from "../hooks/useGetOnePost";
 import { usePostMutations } from "../hooks/usePostMutations";
+import { useGetCategories } from "../hooks/useGetCategories";
+
+import { deleteBlogCoverImg } from "../api/cloudinary";
+
 import BlogEditor from "../components/editor/BlogEditor";
+import CoverImageUpload from "../components/CoverImageUpload";
 
 const useAutosizeTextarea = (value) => {
   const ref = useRef(null);
+
   useEffect(() => {
     const el = ref.current;
+
     if (!el) return;
+
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
   }, [value]);
+
   return ref;
 };
 
@@ -20,9 +30,30 @@ const EditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // --------------------------------------------------
+  // Fetch post
+  // --------------------------------------------------
+
   const { data, isLoading, isError, error } = useGetOnePost(id);
 
+  // --------------------------------------------------
+  // Mutations
+  // --------------------------------------------------
+
   const { updateMutation } = usePostMutations();
+
+  // --------------------------------------------------
+  // Categories
+  // --------------------------------------------------
+
+  const { data: categoryData, isLoading: categoriesLoading } =
+    useGetCategories();
+
+  const categories = categoryData?.categories ?? [];
+
+  // --------------------------------------------------
+  // Form state
+  // --------------------------------------------------
 
   const [form, setForm] = useState({
     title: "",
@@ -30,6 +61,7 @@ const EditPost = () => {
     excerpt: "",
     content: "",
     coverImage: "",
+    coverImagePublicId: "",
     categoryId: "",
     seoTitle: "",
     seoDescription: "",
@@ -38,10 +70,26 @@ const EditPost = () => {
 
   const [saved, setSaved] = useState(false);
 
+  // --------------------------------------------------
+  // Keep track of original Cloudinary image
+  // --------------------------------------------------
+
+  const originalCoverPublicIdRef = useRef("");
+
+  // --------------------------------------------------
+  // Current post
+  // --------------------------------------------------
+
   const post = data?.data;
+
+  // --------------------------------------------------
+  // Populate form when post loads
+  // --------------------------------------------------
 
   useEffect(() => {
     if (!post) return;
+
+    const existingPublicId = post.coverImagePublicId ?? "";
 
     setForm({
       title: post.title ?? "",
@@ -49,14 +97,25 @@ const EditPost = () => {
       excerpt: post.excerpt ?? "",
       content: post.content ?? "",
       coverImage: post.coverImage ?? "",
+      coverImagePublicId: existingPublicId,
       categoryId: post.categoryId ?? "",
       seoTitle: post.seoTitle ?? "",
       seoDescription: post.seoDescription ?? "",
       featured: post.featured ?? false,
     });
+
+    originalCoverPublicIdRef.current = existingPublicId;
   }, [post]);
 
+  // --------------------------------------------------
+  // Autosize title
+  // --------------------------------------------------
+
   const titleRef = useAutosizeTextarea(form.title);
+
+  // --------------------------------------------------
+  // Update field
+  // --------------------------------------------------
 
   const updateField = (field, value) => {
     setForm((prev) => ({
@@ -67,17 +126,73 @@ const EditPost = () => {
     setSaved(false);
   };
 
+  // --------------------------------------------------
+  // Cover image value for component
+  // --------------------------------------------------
+
+  const coverImageValue = {
+    url: form.coverImage,
+    publicId: form.coverImagePublicId,
+  };
+
+  // --------------------------------------------------
+  // Cover image change
+  // --------------------------------------------------
+
+  const handleCoverImageChange = (image) => {
+    updateField("coverImage", image?.url ?? "");
+    updateField("coverImagePublicId", image?.publicId ?? "");
+  };
+
+  // --------------------------------------------------
+  // Save post
+  // --------------------------------------------------
+
   const handleSave = (e) => {
     e.preventDefault();
 
     updateMutation.mutate(
       {
         id,
-        data: form,
+        data: {
+          title: form.title,
+          slug: form.slug,
+          excerpt: form.excerpt || undefined,
+          content: form.content,
+          coverImage: form.coverImage || undefined,
+          coverImagePublicId: form.coverImagePublicId || undefined,
+          categoryId: form.categoryId,
+          seoTitle: form.seoTitle || undefined,
+          seoDescription: form.seoDescription || undefined,
+          featured: form.featured,
+        },
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setSaved(true);
+
+          // --------------------------------------------
+          // Delete previous Cloudinary image if replaced
+          // or removed.
+          //
+          // This happens AFTER DB update succeeds.
+          // --------------------------------------------
+
+          const oldPublicId = originalCoverPublicIdRef.current;
+
+          const newPublicId = form.coverImagePublicId;
+
+          if (oldPublicId && oldPublicId !== newPublicId) {
+            try {
+              await deleteBlogCoverImg(oldPublicId);
+            } catch (error) {
+              console.error("Failed to delete old cover image:", error);
+            }
+          }
+
+          // Update the reference so the same image
+          // isn't deleted again on the next save.
+          originalCoverPublicIdRef.current = newPublicId;
 
           setTimeout(() => {
             setSaved(false);
@@ -87,9 +202,17 @@ const EditPost = () => {
     );
   };
 
+  // --------------------------------------------------
+  // Loading
+  // --------------------------------------------------
+
   if (isLoading) {
     return <EditPostSkeleton />;
   }
+
+  // --------------------------------------------------
+  // Error
+  // --------------------------------------------------
 
   if (isError) {
     return (
@@ -115,6 +238,10 @@ const EditPost = () => {
     );
   }
 
+  // --------------------------------------------------
+  // Post not found
+  // --------------------------------------------------
+
   if (!post) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
@@ -126,7 +253,7 @@ const EditPost = () => {
 
         <Link
           to="/admin/posts"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium !text-white hover:bg-zinc-800"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium !text-white transition hover:bg-zinc-800"
         >
           <ArrowLeft size={16} />
           Back to posts
@@ -135,14 +262,19 @@ const EditPost = () => {
     );
   }
 
+  // --------------------------------------------------
+  // UI
+  // --------------------------------------------------
+
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* ------------------------------------------------ */}
+      {/* ================================================= */}
       {/* Top Bar */}
-      {/* ------------------------------------------------ */}
+      {/* ================================================= */}
 
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left */}
           <div className="flex min-w-0 items-center gap-4">
             <Link
               to="/admin/posts"
@@ -163,6 +295,7 @@ const EditPost = () => {
             </div>
           </div>
 
+          {/* Right */}
           <div className="flex items-center gap-2">
             {saved && (
               <span className="hidden text-xs font-medium text-emerald-600 sm:block">
@@ -192,9 +325,9 @@ const EditPost = () => {
         </div>
       </header>
 
-      {/* ------------------------------------------------ */}
+      {/* ================================================= */}
       {/* Main */}
-      {/* ------------------------------------------------ */}
+      {/* ================================================= */}
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <form
@@ -202,9 +335,9 @@ const EditPost = () => {
           onSubmit={handleSave}
           className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px]"
         >
-          {/* ============================================ */}
-          {/* Main Editor — no card, flows as one page */}
-          {/* ============================================ */}
+          {/* ================================================= */}
+          {/* Main Editor */}
+          {/* ================================================= */}
 
           <section className="min-w-0">
             {/* Title */}
@@ -217,6 +350,7 @@ const EditPost = () => {
               className="w-full resize-none overflow-hidden border-none bg-transparent font-serif text-4xl font-bold leading-tight text-zinc-950 outline-none placeholder:text-zinc-300 md:text-5xl"
             />
 
+            {/* Slug */}
             <div className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400">
               <span>/blogs/</span>
 
@@ -228,7 +362,7 @@ const EditPost = () => {
               />
             </div>
 
-            {/* Editor — merges straight into the page */}
+            {/* Editor */}
             <div className="mt-10">
               <BlogEditor
                 content={form.content}
@@ -237,12 +371,15 @@ const EditPost = () => {
             </div>
           </section>
 
-          {/* ============================================ */}
-          {/* Sidebar — real settings, kept as a panel */}
-          {/* ============================================ */}
+          {/* ================================================= */}
+          {/* Sidebar */}
+          {/* ================================================= */}
 
           <aside className="space-y-5">
-            {/* Publish Status */}
+            {/* --------------------------------------------- */}
+            {/* Publishing */}
+            {/* --------------------------------------------- */}
+
             <SettingsCard title="Publishing">
               <div>
                 <label className="text-xs font-medium text-zinc-500">
@@ -258,6 +395,7 @@ const EditPost = () => {
                 </div>
               </div>
 
+              {/* Category */}
               <div className="mt-4">
                 <label className="text-xs font-medium text-zinc-500">
                   Category
@@ -266,16 +404,24 @@ const EditPost = () => {
                 <select
                   value={form.categoryId}
                   onChange={(e) => updateField("categoryId", e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition focus:border-zinc-400"
+                  disabled={categoriesLoading}
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-800 outline-none transition focus:border-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-50"
                 >
-                  <option value="">Select category</option>
-
-                  <option value={form.categoryId}>
-                    {post.category?.name || "Current category"}
+                  <option value="">
+                    {categoriesLoading
+                      ? "Loading categories..."
+                      : "Select category"}
                   </option>
+
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
+              {/* Featured */}
               <label className="mt-4 flex cursor-pointer items-center gap-3">
                 <input
                   type="checkbox"
@@ -296,12 +442,16 @@ const EditPost = () => {
               </label>
             </SettingsCard>
 
+            {/* --------------------------------------------- */}
             {/* Excerpt */}
+            {/* --------------------------------------------- */}
+
             <SettingsCard title="Excerpt">
               <textarea
                 value={form.excerpt}
                 onChange={(e) => updateField("excerpt", e.target.value)}
                 rows={5}
+                maxLength={500}
                 placeholder="Write a short description..."
                 className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm leading-6 text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-400"
               />
@@ -311,28 +461,21 @@ const EditPost = () => {
               </p>
             </SettingsCard>
 
+            {/* --------------------------------------------- */}
             {/* Cover Image */}
-            <SettingsCard title="Cover image">
-              <input
-                type="url"
-                value={form.coverImage}
-                onChange={(e) => updateField("coverImage", e.target.value)}
-                placeholder="https://..."
-                className="w-full rounded-lg border border-zinc-200 px-3 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-zinc-400"
-              />
+            {/* --------------------------------------------- */}
 
-              {form.coverImage && (
-                <div className="mt-3 overflow-hidden rounded-lg border border-zinc-200">
-                  <img
-                    src={form.coverImage}
-                    alt="Cover preview"
-                    className="aspect-video w-full object-cover"
-                  />
-                </div>
-              )}
+            <SettingsCard title="Cover image">
+              <CoverImageUpload
+                value={coverImageValue}
+                onChange={handleCoverImageChange}
+              />
             </SettingsCard>
 
+            {/* --------------------------------------------- */}
             {/* SEO */}
+            {/* --------------------------------------------- */}
+
             <SettingsCard title="SEO" icon={<Sparkles size={15} />}>
               <div>
                 <label className="text-xs font-medium text-zinc-500">
@@ -365,7 +508,10 @@ const EditPost = () => {
               </div>
             </SettingsCard>
 
-            {/* Metadata */}
+            {/* --------------------------------------------- */}
+            {/* Details */}
+            {/* --------------------------------------------- */}
+
             <SettingsCard title="Details">
               <div className="space-y-3 text-sm">
                 <MetaRow label="Created" value={formatDate(post.createdAt)} />
