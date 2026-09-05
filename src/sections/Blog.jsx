@@ -1,24 +1,24 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  Clock3,
+  Sparkles,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePublicPosts } from "../admin/hooks/usePublicPost";
 
 
-
-function SectionHeading({ subHeading, heading }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-secondary">{subHeading}</p>
-
-      <h2 className="mt-1 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-        {heading}
-      </h2>
-    </div>
-  );
-}
+const CATEGORIES = [
+  "All",
+  "Backend",
+  "AI & Research",
+  "Frontend",
+  "Personal",
+];
 
 function formatDate(date) {
-  if (!date) return "";
+  if (!date) return "Recently";
 
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
@@ -33,41 +33,28 @@ function getReadingTime(readingTime) {
   return `${readingTime} min read`;
 }
 
+function getCategoryLabel(post) {
+  /*
+   * Your current public API returns categoryId,
+   * but not the category name.
+   *
+   * Until the backend returns category.name,
+   * this safely falls back to "Article".
+   */
+  return post.category?.name || "Article";
+}
+
 const Blog = () => {
   const { data, isLoading, isError } = usePublicPosts({
     page: 1,
     limit: 10,
   });
 
-  /*
-   * API response:
-   *
-   * {
-   *   success: true,
-   *   data: {
-   *     blogs: [],
-   *     data: {
-   *       page: 1,
-   *       limit: 10,
-   *       total: 4,
-   *       totalPage: 1
-   *     }
-   *   }
-   * }
-   */
-  console.log("API URL:", import.meta.env.VITE_API_URL);
   const blogs = data?.data?.blogs ?? [];
 
-  /*
-   * Use the blog marked as featured.
-   * If there is no featured blog, use the first blog.
-   */
-  const featuredPost = blogs.find((post) => post.featured === true) ?? blogs[0];
+  const featuredPost =
+    blogs.find((post) => post.featured === true) ?? blogs[0];
 
-  /*
-   * Don't show the featured post again
-   * inside the normal blog list.
-   */
   const regularPosts = featuredPost
     ? blogs.filter((post) => post.id !== featuredPost.id)
     : [];
@@ -75,143 +62,164 @@ const Blog = () => {
   return (
     <section className="sleek-section">
       <div className="mx-auto max-w-7xl">
-        <SectionHeading
-          subHeading="From the blog"
-          heading="Latest thoughts & ideas"
-        />
+        {/* Categories */}
+        <div className="mb-10 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {CATEGORIES.map((category, index) => (
+            <button
+              key={category}
+              type="button"
+              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                index === 0
+                  ? "border-primary bg-primary text-[var(--background)]"
+                  : "border-[var(--border)] bg-[var(--surface)] text-secondary hover:border-primary hover:text-primary"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
 
         {/* Loading */}
         {isLoading && (
-          <div className="mt-10 space-y-4">
-            <div className="h-52 animate-pulse rounded-2xl bg-[var(--surface)]" />
-            <div className="h-20 animate-pulse rounded-xl bg-[var(--surface)]" />
-            <div className="h-20 animate-pulse rounded-xl bg-[var(--surface)]" />
+          <div className="space-y-5">
+            <div className="h-[420px] animate-pulse rounded-2xl bg-[var(--surface)]" />
+
+            <div className="h-24 animate-pulse rounded-2xl bg-[var(--surface)]" />
+
+            <div className="h-24 animate-pulse rounded-2xl bg-[var(--surface)]" />
           </div>
         )}
 
         {/* Error */}
         {isError && (
-          <div className="mt-10 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center">
             <p className="text-sm text-secondary">
               Unable to load blogs right now.
             </p>
           </div>
         )}
 
-        {/* No blogs */}
+        {/* Empty */}
         {!isLoading && !isError && blogs.length === 0 && (
-          <div className="mt-10 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center">
             <p className="text-sm text-secondary">
               No published blogs available.
             </p>
           </div>
         )}
 
-        {/* Content */}
         {!isLoading && !isError && featuredPost && (
           <>
-            {/* =========================
-                FEATURED POST
-            ========================== */}
+            {/* Featured Blog */}
             <motion.article
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="group mt-10 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]"
+              className="group overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]"
             >
-              <div className="grid md:grid-cols-[100px_1fr_auto]">
-                {/* Date */}
-                <div className="hidden border-r border-[var(--border)] p-6 md:block">
-                  <CalendarDays size={18} className="text-secondary" />
+              <div className="grid md:grid-cols-[minmax(0,1fr)_360px]">
+                {/* Featured Content */}
+                <div className="flex min-h-[360px] flex-col justify-between p-7 sm:p-9 lg:p-10">
+                  <div>
+                    {/* Meta */}
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-secondary">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 font-medium">
+                        <Sparkles size={13} />
+                        Featured
+                      </span>
 
-                  <p className="mt-3 text-xs font-medium text-secondary">
-                    {formatDate(
-                      featuredPost.publishedAt || featuredPost.createdAt,
+                      <span className="flex items-center gap-1.5">
+                        <CalendarDays size={14} />
+                        {formatDate(
+                          featuredPost.publishedAt ||
+                            featuredPost.createdAt
+                        )}
+                      </span>
+
+                      {getReadingTime(
+                        featuredPost.readingTime
+                      ) && (
+                        <span className="flex items-center gap-1.5">
+                          <Clock3 size={14} />
+                          {getReadingTime(
+                            featuredPost.readingTime
+                          )}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Category */}
+                    <p className="mt-8 text-sm font-medium text-secondary">
+                      {getCategoryLabel(featuredPost)}
+                    </p>
+
+                    {/* Title */}
+                    <Link
+                      to={`/blogs/${featuredPost.slug}`}
+                      className="block"
+                    >
+                      <h1 className="mt-2 max-w-3xl text-3xl font-bold leading-tight tracking-tight text-primary transition-colors duration-200 group-hover:text-secondary sm:text-4xl lg:text-5xl">
+                        {featuredPost.title}
+                      </h1>
+                    </Link>
+
+                    {/* Excerpt */}
+                    {featuredPost.excerpt && (
+                      <p className="mt-5 max-w-2xl text-sm leading-7 text-secondary sm:text-base">
+                        {featuredPost.excerpt}
+                      </p>
                     )}
-                  </p>
+                  </div>
+
+                  {/* Read Article */}
+                  <div className="mt-8">
+                    <Link
+                      to={`/blogs/${featuredPost.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-secondary"
+                    >
+                      Read article
+
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:bg-primary group-hover:text-[var(--background)]">
+                        <ArrowUpRight size={16} />
+                      </span>
+                    </Link>
+                  </div>
                 </div>
 
-                {/* Content */}
-                <div className="min-w-0 p-6 sm:p-8">
-                  {/* Mobile date */}
-                  <div className="mb-4 flex items-center gap-2 text-xs text-secondary md:hidden">
-                    <CalendarDays size={14} />
+                {/* Featured Image */}
+                <div className="relative min-h-[280px] overflow-hidden border-t border-[var(--border)] md:min-h-full md:border-l md:border-t-0">
+                  {featuredPost.coverImage ? (
+                    <Link
+                      to={`/blogs/${featuredPost.slug}`}
+                      className="absolute inset-0 block"
+                    >
+                      <img
+                        src={featuredPost.coverImage}
+                        alt={featuredPost.title}
+                        className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                      />
 
-                    <span>
-                      {formatDate(
-                        featuredPost.publishedAt || featuredPost.createdAt,
-                      )}
-                    </span>
-                  </div>
-
-                  {/* Meta */}
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-medium text-secondary">
-                      Featured
-                    </span>
-
-                    {getReadingTime(featuredPost.readingTime) && (
-                      <span className="flex items-center gap-1.5 text-xs text-secondary">
-                        <Clock3 size={14} />
-
-                        {getReadingTime(featuredPost.readingTime)}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                    </Link>
+                  ) : (
+                    <div className="flex h-full min-h-[280px] items-center justify-center bg-[var(--background)]">
+                      <span className="text-sm text-secondary">
+                        No cover image
                       </span>
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <Link to={`/blogs/${featuredPost.slug}`} className="block">
-                    <h3 className="mt-4 max-w-3xl text-2xl font-bold tracking-tight text-primary transition-colors group-hover:text-secondary sm:text-3xl">
-                      {featuredPost.title}
-                    </h3>
-                  </Link>
-
-                  {/* Excerpt */}
-                  {featuredPost.excerpt && (
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-secondary sm:text-base">
-                      {featuredPost.excerpt}
-                    </p>
+                    </div>
                   )}
                 </div>
-
-                {/* Read */}
-                <div className="flex items-center border-t border-[var(--border)] p-6 md:border-l md:border-t-0">
-                  <Link
-                    to={`/blogs/${featuredPost.slug}`}
-                    className="flex w-full items-center justify-between gap-3 text-sm font-semibold text-primary transition-colors hover:text-secondary md:w-auto"
-                  >
-                    <span>Read</span>
-
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:bg-primary group-hover:text-[var(--background)]">
-                      <ArrowUpRight size={17} />
-                    </span>
-                  </Link>
-                </div>
               </div>
-
-              {/* Cover Image */}
-              {featuredPost.coverImage && (
-                <Link
-                  to={`/blogs/${featuredPost.slug}`}
-                  className="block border-t border-[var(--border)]"
-                >
-                  <img
-                    src={featuredPost.coverImage}
-                    alt={featuredPost.title}
-                    className="h-64 w-full object-cover transition-transform duration-500 group-hover:scale-[1.01] sm:h-80"
-                  />
-                </Link>
-              )}
             </motion.article>
 
-            {/* =========================
-                BLOG LIST
-            ========================== */}
+            {/* Blog List */}
             {regularPosts.length > 0 && (
-              <div className="mt-6 divide-y divide-[var(--border)] border-y border-[var(--border)]">
+              <div className="mt-8 overflow-hidden rounded-2xl border-y border-[var(--border)]">
                 {regularPosts.map((post, index) => {
-                  const readingTime = getReadingTime(post.readingTime);
+                  const readingTime = getReadingTime(
+                    post.readingTime
+                  );
 
                   return (
                     <motion.article
@@ -226,39 +234,51 @@ const Blog = () => {
                         duration: 0.4,
                         delay: index * 0.05,
                       }}
-                      className="group py-6"
+                      className="group border-b border-[var(--border)] last:border-b-0"
                     >
-                      <div className="grid gap-4 md:grid-cols-[60px_minmax(0,1fr)_170px_48px] md:items-center">
+                      <div className="grid gap-5 px-1 py-7 md:grid-cols-[52px_minmax(0,1fr)_auto_44px] md:items-center md:gap-6">
                         {/* Number */}
-                        <div className="hidden text-sm font-medium text-secondary md:block">
+                        <div className="hidden text-sm font-medium tabular-nums text-secondary md:block">
                           {String(index + 1).padStart(2, "0")}
                         </div>
 
                         {/* Blog Content */}
                         <div className="min-w-0">
-                          <Link to={`/blogs/${post.slug}`} className="block">
-                            <h3 className="truncate text-lg font-semibold tracking-tight text-primary transition-colors group-hover:text-secondary">
+                          <div className="mb-2 flex items-center gap-3">
+                            <span className="text-xs font-medium text-secondary">
+                              {getCategoryLabel(post)}
+                            </span>
+                          </div>
+
+                          <Link
+                            to={`/blogs/${post.slug}`}
+                            className="block"
+                          >
+                            <h2 className="text-lg font-semibold leading-snug tracking-tight text-primary transition-colors duration-200 group-hover:text-secondary sm:text-xl">
                               {post.title}
-                            </h3>
+                            </h2>
 
                             {post.excerpt && (
-                              <p className="mt-1 line-clamp-1 text-sm text-secondary">
+                              <p className="mt-2 line-clamp-2 max-w-2xl text-sm leading-6 text-secondary">
                                 {post.excerpt}
                               </p>
                             )}
                           </Link>
                         </div>
 
-                        {/* Metadata */}
-                        <div className="flex items-center gap-4 text-xs text-secondary md:justify-end">
-                          <span className="flex items-center gap-1.5 whitespace-nowrap">
+                        {/* Meta */}
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-secondary md:justify-end">
+                          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
                             <CalendarDays size={14} />
 
-                            {formatDate(post.publishedAt || post.createdAt)}
+                            {formatDate(
+                              post.publishedAt ||
+                                post.createdAt
+                            )}
                           </span>
 
                           {readingTime && (
-                            <span className="flex items-center gap-1.5 whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
                               <Clock3 size={14} />
 
                               {readingTime}
@@ -266,29 +286,35 @@ const Blog = () => {
                           )}
                         </div>
 
-                        {/* Read Arrow */}
+                        {/* Arrow */}
                         <Link
                           to={`/blogs/${post.slug}`}
                           aria-label={`Read ${post.title}`}
-                          className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-primary transition-all duration-300 hover:bg-primary hover:text-[var(--background)]"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-primary transition-all duration-300 hover:bg-primary hover:text-[var(--background)]"
                         >
-                          <ArrowUpRight size={16} />
-                        </Link>
-                      </div>
-
-                      {/* Mobile Read */}
-                      <div className="mt-4 md:hidden">
-                        <Link
-                          to={`/blogs/${post.slug}`}
-                          className="inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-secondary"
-                        >
-                          Read article
-                          <ArrowUpRight size={16} />
+                          <ArrowUpRight size={17} />
                         </Link>
                       </div>
                     </motion.article>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Total */}
+            {data?.data?.data?.total > 0 && (
+              <div className="mt-6 flex items-center justify-between text-xs text-secondary">
+                <span>
+                  {data.data.data.total}{" "}
+                  {data.data.data.total === 1
+                    ? "article"
+                    : "articles"}
+                </span>
+
+                <span>
+                  Page {data.data.data.page} of{" "}
+                  {data.data.data.totalPage}
+                </span>
               </div>
             )}
           </>
