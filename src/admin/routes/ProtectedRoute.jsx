@@ -13,6 +13,7 @@ const ProtectedRoute = () => {
   }
 
   if (isError || !data?.data) {
+    console.log("Authentication error:", isError, data);
     return <Navigate to="/admin/login" replace />;
   }
 
