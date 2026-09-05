@@ -3,12 +3,15 @@ import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePublicPosts } from "../admin/hooks/usePublicPost";
 
+
 function SectionHeading({ subHeading, heading }) {
   return (
     <div>
-      <p className="text-sm font-medium text-secondary">{subHeading}</p>
+      <p className="text-sm font-medium text-secondary">
+        {subHeading}
+      </p>
 
-      <h2 className="mt-1 text-3xl font-bold tracking-tight md:text-4xl">
+      <h2 className="mt-1 text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">
         {heading}
       </h2>
     </div>
@@ -25,283 +28,275 @@ function formatDate(date) {
   });
 }
 
-export default function Blog({ sectionRef }) {
-  const { data, isLoading, isError } = usePublicPosts({
+function getReadingTime(readingTime) {
+  if (!readingTime) return "5 min read";
+
+  return `${readingTime} min read`;
+}
+
+const Blog = () => {
+  const {
+    data,
+    isLoading,
+    isError,
+  } = usePublicPosts({
     page: 1,
     limit: 10,
   });
-  console.log("Blog data:", data?.data?.blogs);
 
-  const posts = data?.data?.blogs ?? [];
+  /*
+    API response:
 
-  const featuredPost = posts.find((post) => post.featured) || posts[0];
+    {
+      success: true,
+      data: {
+        blogs: [],
+        data: {
+          page,
+          limit,
+          total,
+          totalPage
+        }
+      }
+    }
+  */
 
-  const remainingPosts = posts.filter((post) => post.id !== featuredPost?.id);
+  const blogs = data?.data?.blogs ?? [];
+
+  /*
+    Featured blog:
+    Use the first blog marked featured.
+    If none is featured, use the first blog.
+  */
+  const featuredPost =
+    blogs.find((blog) => blog.featured === true) ?? blogs[0];
+
+  /*
+    All remaining blogs.
+    Avoid showing the featured blog twice.
+  */
+  const remainingPosts = featuredPost
+    ? blogs.filter((blog) => blog.id !== featuredPost.id)
+    : [];
+
+  if (isLoading) {
+    return (
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHeading
+          subHeading="From the blog"
+          heading="Latest thoughts & ideas"
+        />
+
+        <div className="mt-10 animate-pulse">
+          <div className="h-48 rounded-2xl bg-zinc-100" />
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHeading
+          subHeading="From the blog"
+          heading="Latest thoughts & ideas"
+        />
+
+        <div className="mt-10 rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-600">
+          Unable to load blogs right now.
+        </div>
+      </section>
+    );
+  }
+
+  if (!blogs.length) {
+    return (
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHeading
+          subHeading="From the blog"
+          heading="Latest thoughts & ideas"
+        />
+
+        <div className="mt-10 rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-600">
+          No published blogs available.
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section ref={sectionRef} data-section="blogs" className="sleek-section">
-      {/* Header */}
+    <section className="mx-auto max-w-7xl px-6 py-20">
+      {/* Heading */}
+      <SectionHeading
+        subHeading="From the blog"
+        heading="Latest thoughts & ideas"
+      />
 
-      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-        <SectionHeading subHeading="Writing & Ideas" heading="Blogs" />
-      </div>
-
-      {/* Loading */}
-
-      {isLoading && (
-        <div className="mt-10 border-t border-(--border)">
-          <div className="border-b border-(--border) py-8">
-            <div className="h-5 w-32 animate-pulse rounded bg-(--muted)/20" />
-
-            <div className="mt-4 h-7 max-w-xl animate-pulse rounded bg-(--muted)/20" />
-
-            <div className="mt-3 h-4 max-w-2xl animate-pulse rounded bg-(--muted)/20" />
-          </div>
-
-          <div className="border-b border-(--border) py-8">
-            <div className="h-5 max-w-lg animate-pulse rounded bg-(--muted)/20" />
-
-            <div className="mt-3 h-4 max-w-2xl animate-pulse rounded bg-(--muted)/20" />
-          </div>
-        </div>
-      )}
-
-      {/* Error */}
-
-      {isError && (
-        <div className="mt-10 border-t border-(--border) py-8">
-          <p className="text-sm text-secondary">
-            Unable to load blogs right now.
-          </p>
-        </div>
-      )}
-
-      {/* Featured Blog */}
-
-      {!isLoading && !isError && featuredPost && (
+      {/* Featured Post */}
+      {featuredPost && (
         <motion.article
-          initial={{ opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="group mt-10 overflow-hidden rounded-2xl border border-(--border) bg-(--surface)"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-10 overflow-hidden rounded-2xl border border-zinc-200 bg-white"
         >
-          <div className="grid md:grid-cols-[100px_1fr_auto] md:items-center">
-            {/* Number */}
+          <div className="grid md:grid-cols-[100px_1fr_auto]">
+            {/* Date */}
+            <div className="hidden border-r border-zinc-200 p-6 md:block">
+              <CalendarDays
+                size={20}
+                className="text-zinc-500"
+              />
 
-            <div className="hidden h-full border-r border-(--border) p-6 md:flex md:items-center md:justify-center">
-              <span className="text-5xl font-bold tracking-tighter text-secondary/30">
-                01
-              </span>
+              <p className="mt-3 text-sm font-medium text-zinc-950">
+                {formatDate(
+                  featuredPost.publishedAt ||
+                    featuredPost.createdAt
+                )}
+              </p>
             </div>
 
             {/* Content */}
-
-            <div className="p-6 md:p-8">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-secondary">
-                <span className="font-semibold uppercase tracking-[0.14em]">
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center gap-3 text-xs text-zinc-500">
+                <span className="rounded-full bg-zinc-100 px-3 py-1 font-medium">
                   Featured
                 </span>
 
-                <span className="h-1 w-1 rounded-full bg-[var(--muted)]" />
-
-                <span className="flex items-center gap-1.5">
-                  <CalendarDays size={13} />
-                  {formatDate(featuredPost.publishedAt)}
+                <span className="flex items-center gap-1">
+                  <Clock3 size={14} />
+                  {getReadingTime(featuredPost.readingTime)}
                 </span>
-
-                {featuredPost.readingTime && (
-                  <>
-                    <span className="h-1 w-1 rounded-full bg-[var(--muted)]" />
-
-                    <span className="flex items-center gap-1.5">
-                      <Clock3 size={13} />
-                      {featuredPost.readingTime} min read
-                    </span>
-                  </>
-                )}
               </div>
 
-              <h3 className="mt-4 max-w-3xl text-2xl font-bold leading-tight tracking-tight md:text-3xl">
+              <h3 className="mt-4 text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
                 {featuredPost.title}
               </h3>
 
               {featuredPost.excerpt && (
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-secondary">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base">
                   {featuredPost.excerpt}
                 </p>
               )}
 
-              {featuredPost.tags?.length > 0 && (
-                <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
-                  {featuredPost.tags.map((item) => {
-                    const tag = item.tag?.name || item.name || item;
-
-                    return (
-                      <span
-                        key={typeof tag === "string" ? tag : item.id}
-                        className="text-xs text-secondary"
-                      >
-                        #{tag}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
+              {/* Mobile date */}
+              <div className="mt-5 flex items-center gap-2 text-xs text-zinc-500 md:hidden">
+                <CalendarDays size={14} />
+                {formatDate(
+                  featuredPost.publishedAt ||
+                    featuredPost.createdAt
+                )}
+              </div>
             </div>
 
-            {/* Read */}
-
-            <div className="border-t border-(--border) p-5 md:border-l md:border-t-0 md:p-8">
+            {/* Read Button */}
+            <div className="flex items-center border-t border-zinc-200 p-6 md:border-l md:border-t-0">
               <Link
                 to={`/blogs/${featuredPost.slug}`}
-                className="inline-flex w-full items-center justify-between gap-3 text-sm font-semibold md:w-auto"
+                className="inline-flex items-center gap-2 whitespace-nowrap text-sm font-medium text-zinc-950 transition hover:text-zinc-500"
               >
-                <span>Read</span>
-
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-(--border) transition-all duration-300 group-hover:bg-(--foreground) group-hover:text-(--background)">
-                  <ArrowUpRight size={16} />
-                </span>
+                Read article
+                <ArrowUpRight size={17} />
               </Link>
             </div>
           </div>
+
+          {/* Cover Image */}
+          {featuredPost.coverImage && (
+            <div className="border-t border-zinc-200">
+              <img
+                src={featuredPost.coverImage}
+                alt={featuredPost.title}
+                className="h-64 w-full object-cover sm:h-80"
+              />
+            </div>
+          )}
         </motion.article>
       )}
 
-      {/* Blog List */}
-
-      {!isLoading && !isError && remainingPosts.length > 0 && (
-        <div className="mt-4 border-t border-(--border)">
+      {/* Remaining Posts */}
+      {remainingPosts.length > 0 && (
+        <div className="mt-6 divide-y divide-zinc-200 border-y border-zinc-200">
           {remainingPosts.map((post, index) => (
             <motion.article
               key={post.id}
-              initial={{
-                opacity: 0,
-                y: 12,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{
-                duration: 0.35,
-                delay: index * 0.04,
+                duration: 0.4,
+                delay: index * 0.05,
               }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              className="group border-b border-(--border) py-6 transition-colors md:py-7"
+              className="group py-6"
             >
-              <div className="grid gap-5 md:grid-cols-[60px_minmax(0,1fr)_170px_48px] md:items-center md:gap-6">
+              <div className="grid gap-4 md:grid-cols-[60px_minmax(0,1fr)_170px_auto] md:items-center">
                 {/* Number */}
-
-                <div className="hidden md:block">
-                  <span className="text-sm font-medium tabular-nums text-secondary">
-                    {String(index + 2).padStart(2, "0")}
-                  </span>
+                <div className="hidden text-sm font-medium text-zinc-400 md:block">
+                  {String(index + 1).padStart(2, "0")}
                 </div>
 
-                {/* Blog Content */}
-
+                {/* Blog Info */}
                 <div className="min-w-0">
-                  <h3 className="text-lg font-bold leading-snug tracking-tight md:text-xl">
-                    {post.title}
-                  </h3>
-
-                  {post.excerpt && (
-                    <p className="mt-2 max-w-3xl line-clamp-2 text-sm leading-6 text-secondary">
-                      {post.excerpt}
-                    </p>
-                  )}
-
-                  {post.tags?.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-                      {post.tags.slice(0, 3).map((item) => {
-                        const tag = item.tag?.name || item.name || item;
-
-                        return (
-                          <span
-                            key={typeof tag === "string" ? tag : item.id}
-                            className="text-xs text-secondary"
-                          >
-                            #{tag}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {/* Date + Read Time */}
-
-                <div className="flex items-center gap-4 text-xs text-secondary md:flex-col md:items-end md:gap-1.5">
-                  <span className="flex items-center gap-1.5 whitespace-nowrap">
-                    <CalendarDays size={13} />
-
-                    {formatDate(post.publishedAt)}
-                  </span>
-
-                  {post.readingTime && (
-                    <>
-                      <span className="h-1 w-1 rounded-full bg-(--muted) md:hidden" />
-
-                      <span className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Clock3 size={13} />
-                        {post.readingTime} min
-                      </span>
-                    </>
-                  )}
-                </div>
-
-                {/* Arrow */}
-
-                <div className="hidden md:flex md:justify-end">
                   <Link
                     to={`/blogs/${post.slug}`}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-(--border) text-secondary transition-all duration-300 group-hover:border-(--foreground) group-hover:bg-(--foreground) group-hover:text-(--background)"
+                    className="block"
                   >
-                    <ArrowUpRight size={16} />
+                    <h3 className="text-lg font-semibold tracking-tight text-zinc-950 transition group-hover:text-zinc-500">
+                      {post.title}
+                    </h3>
+
+                    {post.excerpt && (
+                      <p className="mt-1 line-clamp-2 text-sm leading-6 text-zinc-500">
+                        {post.excerpt}
+                      </p>
+                    )}
                   </Link>
                 </div>
-              </div>
 
-              {/* Mobile Arrow */}
+                {/* Date + Reading Time */}
+                <div className="flex items-center gap-4 text-xs text-zinc-500 md:justify-end">
+                  <span className="flex items-center gap-1.5">
+                    <CalendarDays size={14} />
 
-              <div className="mt-5 flex items-center md:hidden">
+                    {formatDate(
+                      post.publishedAt || post.createdAt
+                    )}
+                  </span>
+
+                  <span className="flex items-center gap-1.5">
+                    <Clock3 size={14} />
+
+                    {getReadingTime(post.readingTime)}
+                  </span>
+                </div>
+
+                {/* Read */}
                 <Link
                   to={`/blogs/${post.slug}`}
-                  className="inline-flex items-center gap-2 text-xs font-medium text-secondary"
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-zinc-950 transition hover:text-zinc-500"
                 >
-                  <span>Read article</span>
+                  Read
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
 
-                  <ArrowUpRight size={14} />
+              {/* Mobile Read */}
+              <div className="mt-4 md:hidden">
+                <Link
+                  to={`/blogs/${post.slug}`}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-950"
+                >
+                  Read article
+                  <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.article>
           ))}
         </div>
       )}
-
-      {/* No Posts */}
-
-      {!isLoading && !isError && posts.length === 0 && (
-        <div className="mt-10 border-t border-(--border) py-8">
-          <p className="text-sm text-secondary">No articles published yet.</p>
-        </div>
-      )}
-
-      {/* Footer */}
-
-      {!isLoading && posts.length > 0 && (
-        <div className="mt-6 flex items-center justify-between text-xs text-secondary">
-          <span>
-            {posts.length} {posts.length === 1 ? "article" : "articles"}
-          </span>
-
-          <span>More coming soon</span>
-        </div>
-      )}
     </section>
   );
-}
+};
+
+export default Blog;
