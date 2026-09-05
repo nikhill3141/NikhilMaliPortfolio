@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { usePublicPosts } from "../hooks/usePublicPosts";
+import { usePublicPosts } from "../admin/hooks/usePublicPost";
+
 
 const categories = ["All", "Frontend", "Backend", "AI & Research", "Personal"];
 
