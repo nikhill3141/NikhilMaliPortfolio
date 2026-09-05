@@ -30,6 +30,7 @@ export default function Blog({ sectionRef }) {
     page: 1,
     limit: 10,
   });
+  console.log("Blog data:", data);
 
   const posts = data?.data?.blogs ?? [];
 
