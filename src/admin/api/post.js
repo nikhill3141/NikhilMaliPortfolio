@@ -14,10 +14,17 @@ export const getPosts = async ({page=1, limit=10,search="", status=""}= {}) => {
   const response = await api.get(`/blogs/admin?${params.toString()}`)
   return response.data
 }
-export const getPublicPosts = async ({page=1, limit=10}= {}) => {
-  const response = await api.get("/blogs", {params:{page, limit}})
-  return response.data
-}
+
+export const getPublicPosts = async ({ page = 1, limit = 10 } = {}) => {
+  const params = new URLSearchParams();
+
+  params.set("page", page);
+  params.set("limit", limit);
+
+  const response = await api.get(`/blogs?${params.toString()}`);
+
+  return response.data;
+};
 
 export const getPostbyId = async (id) => {
   const response = await api.get(`/blogs/post/${id}`)
