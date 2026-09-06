@@ -33,7 +33,6 @@ export const getPostbyId = async (id) => {
 }
 export const getPostbySlug = async (slug) => {
   const response = await api.get(`/blogs/${slug}`)
-  if(response.data.success === 'false') return false
   return response.data
 }
 
