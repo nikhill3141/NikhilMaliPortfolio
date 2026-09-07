@@ -1,76 +1,127 @@
-import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import {usePublicPosts} from "../admin/hooks/usePublicPost.js"
+import { ArrowRight, CalendarDays } from "lucide-react";
 
-
-const formatDate = (date) => {
-  if (!date) return "";
-
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
-
-const getTextFromNode = (node) => {
-  if (!node) return "";
-
-  if (node.type === "text") {
-    return node.text || "";
-  }
-
-  if (Array.isArray(node.content)) {
-    return node.content.map(getTextFromNode).join("");
-  }
-
-  return "";
-};
-
-const getExcerpt = (post) => {
-  if (post.excerpt?.trim()) {
-    return post.excerpt;
-  }
-
-  const text = getTextFromNode(post.content).replace(/\s+/g, " ").trim();
-
-  return text.length > 150 ? `${text.slice(0, 150)}...` : text;
-};
+import { useCategories } from "../admin/hooks/useGetCategories";
+import { usePublicPosts } from "../admin/hooks/usePublicPost";
 
 const Blog = () => {
-  const { data, isLoading, isError } = usePublicPosts({
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [showAll, setShowAll] = useState(false);
+
+  const {
+    data: postsResponse,
+    isLoading: postsLoading,
+    isError: postsError,
+  } = usePublicPosts({
     page: 1,
-    limit: 10,
+    limit: 50,
   });
 
-  const posts = data?.data?.blogs || [];
+  const {
+    data: categoriesResponse,
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+  } = useCategories();
 
-  const featuredPost = posts.find((post) => post.featured === true);
+  const posts = postsResponse?.data?.blogs || [];
+  const categories = categoriesResponse?.categories || [];
 
-  const regularPosts = posts.filter((post) => post.id !== featuredPost?.id);
+  const formatDate = (date) => {
+    if (!date) return "";
 
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const getReadingTime = (minutes) => {
+    return `${minutes || 10} min read`;
+  };
+
+  /*
+   * Category lookup
+   */
+  const categoryMap = useMemo(() => {
+    return categories.reduce((map, category) => {
+      map[category.id] = category;
+      return map;
+    }, {});
+  }, [categories]);
+
+  /*
+   * Count posts for every category
+   */
+  const categoryCount = useMemo(() => {
+    return posts.reduce((count, post) => {
+      if (!post.categoryId) return count;
+
+      count[post.categoryId] = (count[post.categoryId] || 0) + 1;
+
+      return count;
+    }, {});
+  }, [posts]);
+
+  /*
+   * Filter posts
+   */
+  const filteredPosts = useMemo(() => {
+    if (activeCategory === "all") {
+      return posts;
+    }
+
+    return posts.filter((post) => post.categoryId === activeCategory);
+  }, [posts, activeCategory]);
+
+  /*
+   * Show only 8 initially
+   */
+  const visiblePosts = showAll ? filteredPosts : filteredPosts.slice(0, 8);
+
+  const isLoading = postsLoading || categoriesLoading;
+
+  /*
+   * Loading
+   */
   if (isLoading) {
     return (
       <section className="sleek-section">
-        <div className="mx-auto max-w-6xl px-5 py-24 sm:px-6 lg:px-8">
-          <div className="animate-pulse">
-            <div className="h-4 w-20 rounded bg-zinc-200 dark:bg-zinc-800" />
+        <div className="animate-pulse">
+          <div className="flex flex-wrap gap-3">
+            <div className="h-10 w-24 rounded-full bg-[var(--surface)]" />
+            <div className="h-10 w-28 rounded-full bg-[var(--surface)]" />
+            <div className="h-10 w-28 rounded-full bg-[var(--surface)]" />
+          </div>
 
-            <div className="mt-4 h-10 w-72 rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div className="mt-14 space-y-12">
+            {[1, 2, 3, 4].map((item) => (
+              <div key={item}>
+                <div className="h-7 w-2/3 rounded bg-[var(--surface)]" />
 
-            <div className="mt-12 h-48 rounded-2xl bg-zinc-100 dark:bg-zinc-900" />
+                <div className="mt-3 h-4 w-1/2 rounded bg-[var(--surface)]" />
+
+                <div className="mt-3 h-6 w-24 rounded bg-[var(--surface)]" />
+
+                <div className="mt-3 h-4 w-32 rounded bg-[var(--surface)]" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
     );
   }
 
-  if (isError) {
+  /*
+   * Error
+   */
+  if (postsError || categoriesError) {
     return (
       <section className="sleek-section">
-        <div className="mx-auto max-w-6xl px-5 py-24 sm:px-6 lg:px-8">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Unable to load articles.
+        <div>
+          <p className="text-sm text-red-500">
+            Unable to load articles right now.
           </p>
         </div>
       </section>
@@ -79,148 +130,262 @@ const Blog = () => {
 
   return (
     <section className="sleek-section">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-        {/* Featured */}
-        {featuredPost && (
-          <article className="mt-10 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
-            <div className="grid md:grid-cols-[100px_1fr_auto]">
-              {/* Number */}
-              <div className="hidden border-r border-[var(--border)] p-6 md:flex md:justify-center">
-                <span className="text-sm text-zinc-400">01</span>
-              </div>
+      {/* ================= CATEGORIES ================= */}
 
-              {/* Content */}
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center gap-3 text-xs text-zinc-400">
-                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                    Featured
-                  </span>
+      <div className="flex flex-wrap items-center gap-3">
+        {/* All */}
+        <button
+          type="button"
+          onClick={() => {
+            setActiveCategory("all");
+            setShowAll(false);
+          }}
+          className={`
+            flex h-10 items-center gap-3 rounded-full
+            px-4 text-sm font-medium
+            transition-colors
+            ${
+              activeCategory === "all"
+                ? "bg-[var(--foreground)] text-[var(--background)]"
+                : "sleek-chip text-secondary hover:text-[var(--foreground)]"
+            }
+          `}
+        >
+          <span>All</span>
 
-                  <span>{formatDate(featuredPost.createdAt)}</span>
-                </div>
+          <span
+            className={`
+              flex min-w-[27px] items-center justify-center
+              rounded-full px-2 py-[2px]
+              text-[11px] font-semibold
+              ${
+                activeCategory === "all"
+                  ? "bg-[var(--background)]/20"
+                  : "bg-[var(--background)]/20"
+              }
+            `}
+          >
+            {posts.length}
+          </span>
+        </button>
 
-                <h2 className="mt-4 max-w-2xl text-2xl font-bold tracking-tight text-zinc-950 dark:text-white sm:text-3xl">
-                  {featuredPost.title}
-                </h2>
+        {/* Backend categories */}
+        {categories.map((category) => {
+          const isActive = activeCategory === category.id;
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-                  {getExcerpt(featuredPost)}
-                </p>
+          return (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => {
+                setActiveCategory(category.id);
+                setShowAll(false);
+              }}
+              className={`
+                flex h-10 items-center gap-3 rounded-full
+                px-4 text-sm font-medium
+                transition-colors
+                ${
+                  isActive
+                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                    : "sleek-chip text-secondary hover:text-[var(--foreground)]"
+                }
+              `}
+            >
+              <span>{category.name}</span>
 
-                <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-zinc-400">
-                  <span className="inline-flex items-center gap-1.5">
-                    <CalendarDays size={14} />
-                    {formatDate(featuredPost.createdAt)}
-                  </span>
+              <span
+                className="
+                  flex min-w-[27px]
+                  items-center justify-center
+                  rounded-full
+                  bg-[var(--background)]/20
+                  px-2 py-[2px]
+                  text-[11px]
+                  font-semibold
+                "
+              >
+                {categoryCount[category.id] || 0}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
-                  {featuredPost.readingTime && (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock3 size={14} />
-                      {featuredPost.readingTime} min read
-                    </span>
-                  )}
-                </div>
-              </div>
+      {/* ================= SHOW ALL ================= */}
 
-              {/* Image */}
-              <div className="flex w-full flex-col justify-between gap-5 p-5 md:w-[230px]">
-                {featuredPost.coverImage ? (
-                  <div className="h-32 overflow-hidden rounded-xl">
-                    <img
-                      src={featuredPost.coverImage}
-                      alt={featuredPost.title}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-32 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
-                )}
+      {!showAll && filteredPosts.length > 8 && (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="
+            mt-3 inline-flex h-10
+            items-center rounded-full
+            sleek-chip
+            px-4
+            text-sm
+            text-secondary
+            transition-colors
+            hover:text-[var(--foreground)]
+          "
+        >
+          <span className="mr-1">↻</span>
+          Show all
+        </button>
+      )}
 
-                <Link
-                  to={`/blogs/${featuredPost.slug}`}
-                  className="flex items-center justify-between text-sm font-semibold text-zinc-950 dark:text-white"
-                >
-                  Read article
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border)]">
-                    <ArrowUpRight size={17} />
-                  </span>
-                </Link>
-              </div>
-            </div>
-          </article>
-        )}
+      {/* ================= EMPTY STATE ================= */}
 
-        {/* Articles */}
-        <div className="">
-          {regularPosts.length === 0 ? (
-            <div className="px-6 py-16 text-center">
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                No articles published yet.
-              </p>
-            </div>
-          ) : (
-            regularPosts.map((post, index) => (
+      {visiblePosts.length === 0 && (
+        <div className="py-24">
+          <h2 className="text-xl font-semibold text-[var(--foreground)]">
+            No articles found
+          </h2>
+
+          <p className="mt-2 text-sm text-secondary">
+            There are currently no articles in this category.
+          </p>
+        </div>
+      )}
+
+      {/* ================= BLOG LIST ================= */}
+
+      {visiblePosts.length > 0 && (
+        <div className="mt-14 space-y-12 sm:space-y-14">
+          {visiblePosts.map((post) => {
+            const category = categoryMap[post.categoryId];
+
+            return (
               <article
                 key={post.id}
-                className="group border-b border-[var(--border)] last:border-b-0"
+                className="
+                  group
+                  grid
+                  items-center
+                  gap-7
+                  md:grid-cols-[minmax(0,1fr)_140px]
+                "
               >
-                <Link
-                  to={`/blogs/${post.slug}`}
-                  className="grid items-center gap-5 p-5 sm:p-6 md:grid-cols-[60px_minmax(0,1fr)_170px_40px]"
-                >
-                  {/* Number */}
-                  <span className="hidden text-sm text-zinc-400 md:block">
-                    {featuredPost
-                      ? String(index + 2).padStart(2, "0")
-                      : String(index + 1).padStart(2, "0")}
-                  </span>
+                {/* ================= CONTENT ================= */}
 
-                  {/* Text */}
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-3 text-xs text-zinc-400">
-                      {post.readingTime && (
-                        <>
-                          <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-
-                          <span>{post.readingTime} min read</span>
-                        </>
-                      )}
-                    </div>
-
-                    <h2 className="mt-2 text-base font-semibold text-zinc-950 dark:text-white sm:text-lg">
+                <div className="min-w-0">
+                  {/* Title */}
+                  <Link
+                    to={`/blogs/${post.slug}`}
+                    className="group/title inline-block"
+                  >
+                    <h2
+                      className="
+                        text-xl
+                        font-semibold
+                        leading-[1.35]
+                        tracking-tight
+                        text-[var(--foreground)]
+                        transition-colors
+                        duration-200
+                        group-hover/title:text-secondary
+                        sm:text-2xl
+                      "
+                    >
                       {post.title}
                     </h2>
+                  </Link>
 
-                    <p className="mt-1 line-clamp-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-                      {getExcerpt(post)}
+                  {/* Excerpt */}
+                  {post.excerpt && (
+                    <p
+                      className="
+                        mt-1
+                        max-w-3xl
+                        text-[15px]
+                        leading-6
+                        text-secondary
+                        sm:text-base
+                      "
+                    >
+                      {post.excerpt}
                     </p>
-                    <div className="flex items-center  text-xs text-zinc-400">
-                      <span>{formatDate(post.createdAt)}</span>
-                    </div>
-                  </div>
-                  {/* Image */}
-                  <div className="hidden h-20 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 md:block">
-                    
-                    {post.coverImage && (
-                      <img
-                        src={post.coverImage}
-                        alt={post.title}
-                        loading="lazy"
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
+                  )}
 
-                  {/* Arrow */}
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-zinc-600 dark:text-zinc-300">
-                    <ArrowUpRight size={16} />
-                  </span>
-                </Link>
+                  {/* Category */}
+                  {category && (
+                    <div className="mt-2">
+                      <span
+                        className="
+                          sleek-chip
+                          inline-flex
+                          rounded-md
+                          px-2.5
+                          py-1
+                          text-[11px]
+                          font-medium
+                        "
+                      >
+                        {category.name}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Date + Reading time */}
+                  <div
+                    className="
+                      mt-2.5
+                      flex
+                      flex-wrap
+                      items-center
+                      gap-x-4
+                      gap-y-2
+                      text-xs
+                      text-secondary
+                    "
+                  >
+                    <span className="flex items-center gap-2">
+                      <CalendarDays size={14} strokeWidth={1.7} />
+
+                      {formatDate(post.publishedAt || post.createdAt)}
+                    </span>
+
+                    <span>{getReadingTime(post.readingTime)}</span>
+                  </div>
+                </div>
+
+                {/* ================= READ MORE ================= */}
+
+                <div className="md:flex md:justify-end">
+                  <Link
+                    to={`/blogs/${post.slug}`}
+                    className="
+                      inline-flex
+                      items-center
+                      gap-3
+                      whitespace-nowrap
+                      text-sm
+                      font-normal
+                      text-secondary
+                      transition-colors
+                      duration-200
+                      hover:text-[var(--foreground)]
+                      sm:text-base
+                    "
+                  >
+                    <span>Read more</span>
+
+                    <ArrowRight
+                      size={19}
+                      strokeWidth={1.5}
+                      className="
+                        transition-transform
+                        duration-200
+                        group-hover:translate-x-1
+                      "
+                    />
+                  </Link>
+                </div>
               </article>
-            ))
-          )}
+            );
+          })}
         </div>
-      </div>
+      )}
     </section>
   );
 };

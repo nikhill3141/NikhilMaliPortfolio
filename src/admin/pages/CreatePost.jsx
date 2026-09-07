@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import CoverImageUpload from "../components/CoverImageUpload";
 
 import { createPost, publishedPost } from "../api/post";
-import { useGetCategories } from "../hooks/useGetCategories";
+import { useCategories } from "../hooks/useGetCategories";
 import BlogEditor from "../components/editor/BlogEditor";
 
 const useAutosizeTextarea = (value) => {
@@ -44,7 +44,7 @@ const CreatePost = () => {
   });
 
 
-  const { data, isLoading, isError, error } = useGetCategories();
+  const { data, isLoading, isError, error } = useCategories();
 
   useEffect(() => {
     const catData = data?.categories ?? [];

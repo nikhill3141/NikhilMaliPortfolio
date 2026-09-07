@@ -195,7 +195,7 @@ export default function Hero() {
             <div
               key={project.title}
               onClick={() => navigate("/projects")}
-              className="group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-white/10 p-4 sm:p-5 backdrop-blur-sm transition-all duration-300 hover:border-gray-500/30"
+              className="group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl  p-4 sm:p-5 backdrop-blur-sm transition-all duration-300 "
             >
               <div className="flex flex-col items-start gap-1.5 min-w-0">
                 <h3 className="text-lg font-bold">{project.title}</h3>

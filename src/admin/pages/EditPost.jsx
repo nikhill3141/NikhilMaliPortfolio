@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useGetOnePost } from "../hooks/useGetOnePost";
 import { usePostMutations } from "../hooks/usePostMutations";
-import { useGetCategories } from "../hooks/useGetCategories";
+import { useCategories } from "../hooks/useGetCategories";
 
 import { deleteBlogCoverImg } from "../api/cloudinary";
 
@@ -47,7 +47,7 @@ const EditPost = () => {
   // --------------------------------------------------
 
   const { data: categoryData, isLoading: categoriesLoading } =
-    useGetCategories();
+    useCategories();
 
   const categories = categoryData?.categories ?? [];
 
