@@ -84,11 +84,6 @@ const CreatePost = () => {
     }
   };
 
-  const handlePublish = async () => {
-    const id = postId || (await handleSubmit());
-    if (id) await publishedPost(id);
-  };
-
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -130,15 +125,9 @@ const CreatePost = () => {
               onClick={handleSubmit}
               className="rounded-full px-4 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
-              Save draft
+              Save 
             </button>
-            <button
-              type="button"
-              onClick={handlePublish}
-              className="rounded-full bg-zinc-950 px-5 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white"
-            >
-              Publish
-            </button>
+
           </div>
         </div>
       </div>
