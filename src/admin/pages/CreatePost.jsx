@@ -1,5 +1,6 @@
 // CreatePost.jsx
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import CoverImageUpload from "../components/CoverImageUpload";
 
 import { createPost, publishedPost } from "../api/post";
@@ -26,6 +27,7 @@ const generateSlug = (value) =>
     .replace(/-+/g, "-");
 
 const CreatePost = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
@@ -74,15 +76,17 @@ const CreatePost = () => {
        coverImagePublicId: coverImage.publicId || undefined,
      };
       const res = await createPost(postData);
-      setPostId(res?.post?.id);
+      const createdPostId = res?.post?.id;
+      setPostId(createdPostId);
+      return createdPostId;
     } finally {
       setSaving(false);
     }
   };
 
   const handlePublish = async () => {
-    if (!postId) await handleSubmit();
-    await publishedPost(postId);
+    const id = postId || (await handleSubmit());
+    if (id) await publishedPost(id);
   };
 
   if (isLoading) {
@@ -105,32 +109,33 @@ const CreatePost = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white transition-colors dark:bg-zinc-950">
       {/* Slim top action bar — floats, doesn't box in the writing area */}
-      <div className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md">
+      <div className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/90">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <button
             type="button"
-            className="text-sm font-medium text-zinc-500 hover:text-zinc-800"
+            onClick={() => navigate("/admin/posts")}
+            className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             Cancel
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="mr-1 text-xs text-zinc-400">
+            <span className="mr-1 text-xs text-zinc-400 dark:text-zinc-500">
               {saving ? "Saving..." : postId ? "Draft saved" : ""}
             </span>
             <button
               type="button"
               onClick={handleSubmit}
-              className="rounded-full px-4 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+              className="rounded-full px-4 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Save draft
             </button>
             <button
               type="button"
               onClick={handlePublish}
-              className="rounded-full bg-zinc-950 px-5 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+              className="rounded-full bg-zinc-950 px-5 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white"
             >
               Publish
             </button>
@@ -145,7 +150,7 @@ const CreatePost = () => {
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="cursor-pointer rounded-full border border-zinc-200 bg-transparent px-3 py-1 text-xs font-medium text-zinc-500 outline-none transition hover:border-zinc-300 focus:border-zinc-400"
+            className="cursor-pointer rounded-full border border-zinc-200 bg-transparent px-3 py-1 text-xs font-medium text-zinc-500 outline-none transition hover:border-zinc-300 focus:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:focus:border-zinc-500"
           >
             <option value="">Select category</option>
             {categories.map((category) => (
@@ -163,7 +168,7 @@ const CreatePost = () => {
           onChange={handleTitleChange}
           placeholder="Title"
           rows={1}
-          className="w-full resize-none overflow-hidden border-none bg-transparent font-serif text-4xl font-bold leading-tight text-zinc-950 outline-none placeholder:text-zinc-300 md:text-5xl"
+          className="w-full resize-none overflow-hidden border-none bg-transparent font-serif text-4xl font-bold leading-tight text-zinc-950 outline-none placeholder:text-zinc-300 dark:text-zinc-50 dark:placeholder:text-zinc-600 md:text-5xl"
         />
 
         {/* Subtitle / excerpt — flows right under the title */}
@@ -173,11 +178,11 @@ const CreatePost = () => {
           onChange={(e) => setExcerpt(e.target.value)}
           placeholder="Add a subtitle..."
           rows={1}
-          className="mt-2 w-full resize-none overflow-hidden border-none bg-transparent text-lg text-zinc-400 outline-none placeholder:text-zinc-300"
+          className="mt-2 w-full resize-none overflow-hidden border-none bg-transparent text-lg text-zinc-500 outline-none placeholder:text-zinc-300 dark:text-zinc-400 dark:placeholder:text-zinc-600"
         />
 
         {/* Slug — inline, editable, out of the way until you need it */}
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400">
+        <div className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
           <span>yoursite.com/blog/</span>
           <input
             type="text"
@@ -186,7 +191,7 @@ const CreatePost = () => {
               setSlugTouched(true);
               setSlug(e.target.value);
             }}
-            className="border-b border-transparent bg-transparent text-zinc-500 outline-none hover:border-zinc-200 focus:border-zinc-400"
+            className="border-b border-transparent bg-transparent text-zinc-500 outline-none hover:border-zinc-200 focus:border-zinc-400 dark:text-zinc-400 dark:hover:border-zinc-700 dark:focus:border-zinc-500"
           />
         </div>
         {/* Cover image */}

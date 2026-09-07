@@ -80,15 +80,15 @@ const CoverImageUpload = ({ value, onChange }) => {
   return (
     <div className="mt-8">
       <div className="mb-3">
-        <p className="text-sm font-medium text-zinc-700">Cover image</p>
+        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Cover image</p>
 
-        <p className="mt-1 text-xs text-zinc-400">
+        <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
           JPG, PNG or WebP · Maximum 5 MB
         </p>
       </div>
 
       {hasImage ? (
-        <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50">
+        <div className="group relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800">
           <img
             src={value.url}
             alt="Blog cover preview"
@@ -100,7 +100,7 @@ const CoverImageUpload = ({ value, onChange }) => {
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               <RefreshCw size={15} />
               Replace
@@ -118,8 +118,8 @@ const CoverImageUpload = ({ value, onChange }) => {
           </div>
 
           {uploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm">
-              <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm">
+            <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm dark:bg-zinc-950/70">
+              <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm dark:bg-zinc-900 dark:text-zinc-300">
                 <Loader2 size={16} className="animate-spin" />
                 Uploading...
               </div>
@@ -131,27 +131,27 @@ const CoverImageUpload = ({ value, onChange }) => {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="group flex aspect-video w-full flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/50 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+          className="group flex aspect-video w-full flex-col items-center justify-center rounded-xl border border-dashed border-zinc-300 bg-zinc-50/50 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900/50 dark:hover:border-zinc-600 dark:hover:bg-zinc-900"
         >
           {uploading ? (
             <>
               <Loader2 size={22} className="animate-spin text-zinc-400" />
 
-              <span className="mt-3 text-sm font-medium text-zinc-600">
+              <span className="mt-3 text-sm font-medium text-zinc-600 dark:text-zinc-300">
                 Uploading image...
               </span>
             </>
           ) : (
             <>
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-500 shadow-sm ring-1 ring-zinc-200 transition group-hover:scale-105">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-500 shadow-sm ring-1 ring-zinc-200 transition group-hover:scale-105 dark:bg-zinc-800 dark:text-zinc-400 dark:ring-zinc-700">
                 <ImagePlus size={20} />
               </div>
 
-              <span className="mt-3 text-sm font-medium text-zinc-700">
+              <span className="mt-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Add cover image
               </span>
 
-              <span className="mt-1 text-xs text-zinc-400">
+              <span className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
                 Click to choose an image
               </span>
             </>

@@ -19,7 +19,7 @@ const Posts = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-zinc-500">Loading posts...</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading posts...</p>
       </div>
     );
   }
@@ -43,14 +43,14 @@ const Posts = () => {
     <div className="mx-auto max-w-6xl">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
           Posts
         </h1>
 
         <button
           type="button"
           onClick={() => navigate("/admin/posts/new")}
-          className="inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
+          className="inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white"
         >
           <FilePlus size={16} />
           New post
@@ -62,7 +62,7 @@ const Posts = () => {
         <div className="relative w-full sm:max-w-xs">
           <Search
             size={15}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
           />
           <input
             type="text"
@@ -72,7 +72,7 @@ const Posts = () => {
               setPage(1);
             }}
             placeholder="Search"
-            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400"
+            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500"
           />
         </div>
 
@@ -87,8 +87,8 @@ const Posts = () => {
               }}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 status === s
-                  ? "bg-zinc-950 text-white"
-                  : "text-zinc-500 hover:bg-zinc-100"
+                  ? "bg-zinc-950 text-white dark:bg-zinc-100 dark:text-zinc-950"
+                  : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               }`}
             >
               {s ? s.charAt(0) + s.slice(1).toLowerCase() : "All"}
@@ -98,21 +98,21 @@ const Posts = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-zinc-100">
-                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
+              <tr className="border-b border-zinc-100 dark:border-zinc-800">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400 dark:text-zinc-500">
                   Title
                 </th>
-                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400 dark:text-zinc-500">
                   Status
                 </th>
-                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400 dark:text-zinc-500">
                   Views
                 </th>
-                <th className="px-5 py-3 text-xs font-medium text-zinc-400">
+                <th className="px-5 py-3 text-xs font-medium text-zinc-400 dark:text-zinc-500">
                   Updated
                 </th>
                 <th className="px-5 py-3">
@@ -121,15 +121,15 @@ const Posts = () => {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-zinc-50">
+            <tbody className="divide-y divide-zinc-50 dark:divide-zinc-800">
               {posts.map((post) => (
                 <tr
                   key={post.id}
                   onClick={() => navigate(`/admin/posts/${post.id}/edit`)}
-                  className="cursor-pointer transition hover:bg-zinc-50"
+                  className="cursor-pointer transition hover:bg-zinc-50 dark:hover:bg-zinc-800/70"
                 >
                   <td className="px-5 py-3.5">
-                    <p className="max-w-md truncate text-sm font-medium text-zinc-900">
+                    <p className="max-w-md truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                       {post.title}
                     </p>
                   </td>
@@ -138,11 +138,11 @@ const Posts = () => {
                     <StatusDot status={post.status} />
                   </td>
 
-                  <td className="px-5 py-3.5 text-sm text-zinc-500">
+                  <td className="px-5 py-3.5 text-sm text-zinc-500 dark:text-zinc-400">
                     {post.views}
                   </td>
 
-                  <td className="px-5 py-3.5 text-sm text-zinc-500">
+                  <td className="px-5 py-3.5 text-sm text-zinc-500 dark:text-zinc-400">
                     {new Date(post.updatedAt).toLocaleDateString("en-IN", {
                       day: "2-digit",
                       month: "short",
@@ -163,14 +163,14 @@ const Posts = () => {
 
         {posts.length === 0 && (
           <div className="px-6 py-16 text-center">
-            <p className="text-sm font-medium text-zinc-900">No posts yet</p>
+            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">No posts yet</p>
           </div>
         )}
       </div>
 
       {/* Pagination */}
       {pagination && (
-        <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
+        <div className="mt-4 flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
           <span>
             Page {pagination.page} of {pagination.totalPage}
           </span>
@@ -180,7 +180,7 @@ const Posts = () => {
               type="button"
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
-              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Previous
             </button>
@@ -189,7 +189,7 @@ const Posts = () => {
               type="button"
               disabled={page >= pagination.totalPage}
               onClick={() => setPage((prev) => prev + 1)}
-              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Next
             </button>
@@ -208,7 +208,7 @@ const StatusDot = ({ status }) => {
   };
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600">
+    <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600 dark:text-zinc-300">
       <span
         className={`h-1.5 w-1.5 rounded-full ${styles[status] || styles.ARCHIVED}`}
       />

@@ -60,16 +60,16 @@ const Dashboard = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
             Dashboard
           </h1>
 
-          <p className="mt-1 text-sm text-zinc-500">Overview of your blog.</p>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Overview of your blog.</p>
         </div>
 
         <Link
           to="/admin/posts/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
+          className="inline-flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white"
         >
           <Plus size={17} />
           New post
@@ -84,17 +84,17 @@ const Dashboard = () => {
           return (
             <div
               key={stat.label}
-              className="rounded-xl border border-zinc-200 bg-white p-5"
+              className="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
             >
               <div className="flex items-start justify-between">
-                <p className="text-sm text-zinc-500">{stat.label}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">{stat.label}</p>
 
-                <div className="rounded-lg bg-zinc-100 p-2 text-zinc-600">
+                <div className="rounded-lg bg-zinc-100 p-2 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
                   <Icon size={17} />
                 </div>
               </div>
 
-              <p className="mt-4 text-2xl font-semibold tracking-tight text-zinc-950">
+              <p className="mt-4 text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
                 {isLoading ? "—" : stat.value}
               </p>
             </div>
@@ -103,26 +103,26 @@ const Dashboard = () => {
       </div>
 
       {/* Recent posts */}
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
-        <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4">
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
           <div>
-            <h2 className="text-sm font-semibold text-zinc-950">
+            <h2 className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">
               Recent posts
             </h2>
 
-            <p className="mt-0.5 text-xs text-zinc-500">Your latest content</p>
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">Your latest content</p>
           </div>
 
           <Link
             to="/admin/posts"
-            className="inline-flex items-center gap-1 text-sm font-medium text-zinc-600 transition hover:text-zinc-950"
+            className="inline-flex items-center gap-1 text-sm font-medium text-zinc-600 transition hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
           >
             View all
             <ArrowUpRight size={15} />
           </Link>
         </div>
 
-        <div className="divide-y divide-zinc-100">
+        <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {isLoading ? (
             <div className="px-5 py-10 text-center text-sm text-zinc-500">
               Loading posts...
@@ -143,14 +143,14 @@ const Dashboard = () => {
             posts.slice(0, 5).map((post) => (
               <div
                 key={post.id}
-                className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-zinc-50"
+                className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/70"
               >
                 <div className="min-w-0">
-                  <h3 className="truncate text-sm font-medium text-zinc-900">
+                  <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                     {post.title}
                   </h3>
 
-                  <p className="mt-1 text-xs text-zinc-500">{post.slug}</p>
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{post.slug}</p>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-3">

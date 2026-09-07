@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../api/auth";
+import AdminThemeToggle from "../components/AdminThemeToggle";
 
 
 const AdminLogin = () => {
@@ -39,25 +40,28 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-zinc-50 px-4 transition-colors dark:bg-zinc-950">
+      <div className="absolute right-4 top-4">
+        <AdminThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
             Nikhil Mali
           </h1>
 
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             Sign in to your content studio
           </p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 sm:p-8">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-zinc-950">
+            <h2 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
               Welcome back
             </h2>
 
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
               Enter your credentials to continue.
             </p>
           </div>
@@ -72,7 +76,7 @@ const AdminLogin = () => {
             <div>
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-zinc-800"
+                className="mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
               >
                 Email
               </label>
@@ -85,14 +89,14 @@ const AdminLogin = () => {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-lg border border-zinc-200 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-zinc-800"
+                className="mb-2 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
               >
                 Password
               </label>
@@ -105,21 +109,21 @@ const AdminLogin = () => {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full rounded-lg border border-zinc-200 px-3 py-2.5 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-zinc-400">
+        <p className="mt-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
           Admin access only
         </p>
       </div>

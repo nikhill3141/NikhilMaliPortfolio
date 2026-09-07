@@ -28,7 +28,10 @@ const ToolbarButton = ({ onClick, active, children, title }) => {
         transition
         hover:bg-zinc-100
         hover:text-zinc-950
-        ${active ? "bg-zinc-100 text-zinc-950" : ""}
+        dark:text-zinc-400
+        dark:hover:bg-zinc-800
+        dark:hover:text-zinc-50
+        ${active ? "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50" : ""}
       `}
     >
       {children}
@@ -36,7 +39,7 @@ const ToolbarButton = ({ onClick, active, children, title }) => {
   );
 };
 
-const Divider = () => <div className="mx-1 h-5 w-px bg-zinc-200" />;
+const Divider = () => <div className="mx-1 h-5 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" />;
 
 const EditorToolbar = ({ editor }) => {
   if (!editor) return null;
@@ -52,7 +55,9 @@ const EditorToolbar = ({ editor }) => {
         -translate-x-1/2
         items-center
         gap-1
-        rounded-2xl
+        max-w-[calc(100vw-2rem)]
+        overflow-x-auto
+        rounded-xl
         border
         border-zinc-200
         bg-white/95
@@ -60,6 +65,9 @@ const EditorToolbar = ({ editor }) => {
         shadow-lg
         shadow-zinc-900/10
         backdrop-blur-md
+        dark:border-zinc-700
+        dark:bg-zinc-900/95
+        dark:shadow-black/30
       "
     >
       {/* Paragraph */}

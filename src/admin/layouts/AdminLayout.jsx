@@ -4,7 +4,7 @@ import Topbar from "../components/Topbar";
 
 const AdminLayout = () => {
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-zinc-50 transition-colors dark:bg-zinc-950">
       <Sidebar />
 
       <div className="lg:pl-64">

@@ -78,7 +78,7 @@ const BlogEditor = ({ onChange, content }) => {
   }, [editor, content]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full text-zinc-800 dark:text-zinc-100">
       {/* ============================================== */}
       {/* Writing Area */}
       {/* ============================================== */}
@@ -89,28 +89,7 @@ const BlogEditor = ({ onChange, content }) => {
       {/* Fixed Bottom Toolbar */}
       {/* ============================================== */}
 
-      <div
-        className="
-          fixed
-          bottom-6
-          left-1/2
-          z-50
-          flex
-          -translate-x-1/2
-          items-center
-          gap-1
-          rounded-2xl
-          border
-          border-zinc-200
-          bg-white/95
-          p-2
-          shadow-lg
-          shadow-zinc-900/10
-          backdrop-blur-md
-        "
-      >
-        <EditorToolbar editor={editor} />
-      </div>
+      <EditorToolbar editor={editor} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @font-face {
   font-family: 'Hanken Grotesk';
@@ -52,6 +53,54 @@ body {
   font-family: 'Hanken Grotesk', system-ui, sans-serif;
   letter-spacing: 0;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dark .tiptap {
+  color: #f4f4f5;
+}
+
+.tiptap > * + * {
+  margin-top: 1rem;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tiptap h1 { font-size: 2rem; }
+.tiptap h2 { font-size: 1.5rem; }
+.tiptap h3 { font-size: 1.25rem; }
+
+.tiptap blockquote {
+  border-left: 3px solid #a1a1aa;
+  color: #71717a;
+  margin-left: 0;
+  padding-left: 1rem;
+}
+
+.dark .tiptap blockquote {
+  border-left-color: #71717a;
+  color: #a1a1aa;
+}
+
+.tiptap pre {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: #18181b;
+  color: #f4f4f5;
+  padding: 1rem;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #a1a1aa;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 a {

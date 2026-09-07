@@ -33,24 +33,25 @@ const PostActions = ({ post }) => {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-900"
+        aria-label="Post actions"
+        className="rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
       >
         <MoreHorizontal size={18} />
       </button>
 
       {open && (
-        <div className="absolute right-0 z-20 mt-2 w-40 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg">
+        <div className="absolute right-0 z-20 mt-2 w-40 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-black/30">
           <Link
             to={`/admin/posts/${post.id}/edit`}
             onClick={() => setOpen(false)}
-            className="block w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50"
+            className="block w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Edit
           </Link>
 
           <button
             type="button"
-            className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50"
+            className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Preview
           </button>

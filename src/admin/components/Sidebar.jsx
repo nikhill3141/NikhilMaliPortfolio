@@ -7,6 +7,7 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import AdminThemeToggle from "./AdminThemeToggle";
 
 const navigation = [
   {
@@ -46,22 +47,22 @@ const secondaryNavigation = [
 
 const Sidebar = () => {
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-zinc-200 bg-white lg:block">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-zinc-200 bg-white transition-colors dark:border-zinc-800 dark:bg-zinc-900 lg:block">
       <div className="flex h-full flex-col">
         {/* Logo */}
-        <div className="flex h-16 items-center border-b border-zinc-200 px-6">
+        <div className="flex h-16 items-center border-b border-zinc-200 px-6 dark:border-zinc-800">
           <div>
-            <p className="text-sm font-semibold tracking-tight text-zinc-950">
+            <p className="text-sm font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
               Nikhil Mali
             </p>
 
-            <p className="text-xs text-zinc-500">Content Studio</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Content Studio</p>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-5">
-          <p className="px-3 pb-2 text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+          <p className="px-3 pb-2 text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
             Workspace
           </p>
 
@@ -75,8 +76,8 @@ const Sidebar = () => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-zinc-100 text-zinc-950"
-                        : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                        ? "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50"
+                        : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
                     }`
                   }
                 >
@@ -87,7 +88,7 @@ const Sidebar = () => {
             })}
           </div>
 
-          <p className="px-3 pb-2 pt-8 text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+          <p className="px-3 pb-2 pt-8 text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
             Manage
           </p>
 
@@ -101,8 +102,8 @@ const Sidebar = () => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-zinc-100 text-zinc-950"
-                        : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                        ? "bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-zinc-50"
+                        : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
                     }`
                   }
                 >
@@ -116,18 +117,21 @@ const Sidebar = () => {
         </nav>
 
         {/* User */}
-        <div className="border-t border-zinc-200 p-4">
+        <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="mb-2 px-1">
+            <AdminThemeToggle showLabel />
+          </div>
           <div className="flex items-center gap-3 rounded-lg px-2 py-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 text-sm font-medium text-white">
               NM
             </div>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-zinc-900">
+              <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 Nikhil Mali
               </p>
 
-              <p className="truncate text-xs text-zinc-500">Administrator</p>
+              <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">Administrator</p>
             </div>
           </div>
         </div>
