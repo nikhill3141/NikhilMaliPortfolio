@@ -16,9 +16,12 @@ import {
   Twitter,
   Zap,
 } from "lucide-react";
+
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+
 import { useNavigate } from "react-router-dom";
+
 import {
   FaCss3,
   FaGithub,
@@ -28,10 +31,12 @@ import {
   FaReact,
   FaTwitter,
 } from "react-icons/fa";
+
 import { playClickSound } from "../utils/playClickSound";
 import { TypeAnimation } from "react-type-animation";
 import RollingText from "../components/UI/RollingText";
 
+import { usePublicPosts } from "../admin/hooks/usePublicPost";
 
 const SummaryProjects = [
   {
@@ -69,7 +74,11 @@ const SummaryProjects = [
 ];
 
 const socials = [
-  { href: "https://github.com/nikhill3141", label: "GitHub", icon: Github },
+  {
+    href: "https://github.com/nikhill3141",
+    label: "GitHub",
+    icon: Github,
+  },
   {
     href: "https://www.linkedin.com/in/nikhil-mali-aa878a236/",
     label: "LinkedIn",
@@ -80,40 +89,46 @@ const socials = [
     label: "Instagram",
     icon: Instagram,
   },
-  { href: "https://x.com/NikhilMali7083", label: "X", icon: Twitter },
+  {
+    href: "https://x.com/NikhilMali7083",
+    label: "X",
+    icon: Twitter,
+  },
   {
     href: "mailto:nikhilmali3141@gmail.com",
     label: "Email",
     icon: Mail,
   },
-  { href: "Nikhil_Mali_Resume_A.pdf", label: "Resume", icon: Download },
-];
-const Blogs = [
   {
-    title: "Introduction to Node.js",
-    discription:
-      "A beginner-friendly walkthrough of what Node.js is and how it works under the hood.",
-    uploadedAt: "July 28 2026",
-  },
-  {
-    title: "Getting Started with tRPC",
-    discription:
-      "Build fully type-safe APIs between your client and server without writing a schema by hand.",
-    uploadedAt: "August 3 2026",
-  },
-  {
-    title: "OAuth 2.0 vs OIDC Explained",
-    discription:
-      "A practical breakdown of authentication vs authorization and where each protocol actually fits.",
-    uploadedAt: "August 12 2026",
+    href: "Nikhil_Mali_Resume_A.pdf",
+    label: "Resume",
+    icon: Download,
   },
 ];
 
 export default function Hero() {
   const navigate = useNavigate();
 
+  // Get the latest 3 published blogs from backend
+  const { data: blogsData, isLoading: blogsLoading } = usePublicPosts({
+    page: 1,
+    limit: 3,
+  });
+
+  const blogs = blogsData?.data?.blogs ?? [];
+
+  const formatDate = (date) => {
+    if (!date) return "";
+
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   return (
-    <section data-section="home" className="animate-fade-in-blur pt-5 ">
+    <section data-section="home" className="animate-fade-in-blur pt-5">
       {/* img & title */}
       <div className="flex gap-6">
         <motion.img
@@ -124,6 +139,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
         />
+
         <div>
           <motion.h1
             className="text-1xl font-bold leading-tight sm:text-3xl"
@@ -135,6 +151,7 @@ export default function Hero() {
           </motion.h1>
 
           <RollingText />
+
           <motion.div
             className="my-2 flex gap-3"
             initial={{ opacity: 0, y: 16 }}
@@ -144,6 +161,7 @@ export default function Hero() {
             {/* socials */}
             {socials.map((social) => {
               const Icon = social.icon;
+
               return social.label === "Resume" ? (
                 <a key={social.label} href={social.href} download>
                   <Icon size={20} />
@@ -185,6 +203,7 @@ export default function Hero() {
       >
         <div>
           <p className="text-sm text-secondary">Latest</p>
+
           <h2 className="text-2xl font-bold flex items-center gap-2 mb-2">
             Projects
           </h2>
@@ -195,7 +214,7 @@ export default function Hero() {
             <div
               key={project.title}
               onClick={() => navigate("/projects")}
-              className="group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl  p-4 sm:p-5 backdrop-blur-sm transition-all duration-300 "
+              className="group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl p-4 sm:p-5 backdrop-blur-sm transition-all duration-300"
             >
               <div className="flex flex-col items-start gap-1.5 min-w-0">
                 <h3 className="text-lg font-bold">{project.title}</h3>
@@ -240,36 +259,43 @@ export default function Hero() {
       >
         <div>
           <p className="text-sm text-secondary">Latest</p>
+
           <h2 className="text-2xl font-bold mb-2">Blogs</h2>
         </div>
 
-        <div className="flex flex-col ">
-          {Blogs.map((blog) => (
-            <div
-              key={blog.title}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:py-6 backdrop-blur-sm transition-all duration-300  "
-            >
-              <div className="flex flex-col items-start">
-                <h3 className="text-lg font-bold">{blog.title}</h3>
-                <p className="text-sm text-secondary leading-relaxed">
-                  {blog.discription}
-                </p>
-                <p className="text-xs text-secondary/70 pt-1">
-                  {blog.uploadedAt}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => navigate("/blogs")}
-                aria-label={`Read ${blog.title}`}
-                className="sm:self-center flex items-center justify-center  text-secondary text-sm"
+        <div className="flex flex-col">
+          {blogsLoading ? (
+            <div className="py-6 text-sm text-secondary">Loading blogs...</div>
+          ) : (
+            blogs.map((blog) => (
+              <div
+                key={blog.id}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:py-6 backdrop-blur-sm transition-all duration-300"
               >
-                Read more
-                <ArrowRight size={20} />
-              </button>
-            </div>
-          ))}
+                <div className="flex flex-col items-start">
+                  <h3 className="text-lg font-bold">{blog.title}</h3>
+
+                  <p className="text-sm text-secondary leading-relaxed">
+                    {blog.excerpt}
+                  </p>
+
+                  <p className="text-xs text-secondary/70 pt-1">
+                    {formatDate(blog.createdAt)}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(`/blogs/${blog.slug}`)}
+                  aria-label={`Read ${blog.title}`}
+                  className="sm:self-center flex items-center justify-center text-secondary text-sm"
+                >
+                  Read more
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </motion.div>
     </section>
