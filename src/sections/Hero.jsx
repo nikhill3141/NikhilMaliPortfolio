@@ -191,7 +191,7 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.16 }}
       >
-        I love to build cool stuff and explore new technologies.
+        I love to Build Softwares and Explore New Technologies.
       </motion.p>
 
       {/* Project Hook */}
