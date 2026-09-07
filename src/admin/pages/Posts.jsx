@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FilePlus, Search } from "lucide-react";
 import { usePosts } from "../hooks/usePost";
 import { useState } from "react";
@@ -7,7 +7,8 @@ import PostActions from "../components/PostActions";
 const Posts = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [status, setStatus] = useState(() => searchParams.get("status") || "");
   const { data, isLoading, isError, error } = usePosts(
     page,
     10,
@@ -15,6 +16,21 @@ const Posts = () => {
     status,
   );
   const navigate = useNavigate();
+
+  const updateStatus = (nextStatus) => {
+    setStatus(nextStatus);
+    setPage(1);
+
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (nextStatus) {
+      nextParams.set("status", nextStatus);
+    } else {
+      nextParams.delete("status");
+    }
+
+    setSearchParams(nextParams);
+  };
 
   if (isLoading) {
     return (
@@ -81,10 +97,7 @@ const Posts = () => {
             <button
               key={s || "all"}
               type="button"
-              onClick={() => {
-                setStatus(s);
-                setPage(1);
-              }}
+              onClick={() => updateStatus(s)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 status === s
                   ? "bg-zinc-950 text-white dark:bg-zinc-100 dark:text-zinc-950"

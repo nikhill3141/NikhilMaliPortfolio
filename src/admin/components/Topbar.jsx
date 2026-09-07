@@ -1,5 +1,4 @@
 import { Bell } from "lucide-react";
-import AdminThemeToggle from "./AdminThemeToggle";
 
 const Topbar = () => {
   return (
@@ -9,7 +8,6 @@ const Topbar = () => {
 
         {/* Right */}
         <div className="ml-auto flex items-center gap-3">
-          <AdminThemeToggle />
           <button
             type="button"
             aria-label="Notifications"

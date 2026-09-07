@@ -7,7 +7,6 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import AdminThemeToggle from "./AdminThemeToggle";
 
 const navigation = [
   {
@@ -118,9 +117,6 @@ const Sidebar = () => {
 
         {/* User */}
         <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
-          <div className="mb-2 px-1">
-            <AdminThemeToggle showLabel />
-          </div>
           <div className="flex items-center gap-3 rounded-lg px-2 py-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 text-sm font-medium text-white">
               NM

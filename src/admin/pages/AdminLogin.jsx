@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../api/auth";
-import AdminThemeToggle from "../components/AdminThemeToggle";
 
 
 const AdminLogin = () => {
@@ -40,10 +39,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-zinc-50 px-4 transition-colors dark:bg-zinc-950">
-      <div className="absolute right-4 top-4">
-        <AdminThemeToggle />
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 transition-colors dark:bg-zinc-950">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">

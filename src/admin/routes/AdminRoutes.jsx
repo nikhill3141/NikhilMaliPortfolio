@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute"
 import Posts from "../pages/Posts"
 import CreatePost from "../pages/CreatePost"
 import EditPost from "../pages/EditPost"
+import Settings from "../pages/Settings"
 
 
 const AdminRoutes = () => {
@@ -20,6 +21,7 @@ const AdminRoutes = () => {
           <Route path="posts" element={<Posts />} />
           <Route path="posts/new" element={<CreatePost />} />
           <Route path="posts/:id/edit" element={<EditPost />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
     </Routes>
